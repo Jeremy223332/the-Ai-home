@@ -7,7 +7,8 @@ const aiResponses = {
     Claude: "Hello! I'm Claude.",
     Copilot: "Hello! I'm Copilot.",
     Replit: "Hello! I'm Replit.",
-    Framer: "Hello! I'm Framer."
+    Framer: "Hello! I'm Framer.",
+    Base44: "I'm currently in demo mode."
 };
 
 
@@ -16,19 +17,79 @@ const aiResponses = {
 // -----------------------------
 
 function selectAI(ai) {
-    selectedAIs = [ai];
 
-    document.querySelectorAll(".ai-option").forEach(option => {
-        option.classList.remove("selected");
-    });
+    // Find the official name regardless of capitalization
+    const officialAI = getOfficialAIName(ai);
 
-    const selected = document.querySelector(`[data-ai="${ai}"]`);
-
-    if (selected) {
-        selected.classList.add("selected");
+    if (!officialAI) {
+        console.warn("Unknown AI:", ai);
+        return;
     }
 
-    console.log("Selected AI:", ai);
+    // Toggle AI selection
+    if (selectedAIs.includes(officialAI)) {
+        selectedAIs = selectedAIs.filter(
+            name => name !== officialAI
+        );
+    } else {
+        selectedAIs.push(officialAI);
+    }
+
+    updateAISelection();
+
+    console.log("Selected AIs:", selectedAIs);
+}
+
+
+// -----------------------------
+// OFFICIAL AI NAME
+// -----------------------------
+
+function getOfficialAIName(name) {
+
+    const aiNames = [
+        "ChatGPT",
+        "Gemini",
+        "Claude",
+        "Copilot",
+        "Replit",
+        "Framer",
+        "Base44"
+    ];
+
+    const lowerName = name.trim().toLowerCase();
+
+    return aiNames.find(
+        ai => ai.toLowerCase() === lowerName
+    ) || null;
+}
+
+
+// -----------------------------
+// UPDATE AI BUTTONS
+// -----------------------------
+
+function updateAISelection() {
+
+    document.querySelectorAll(".ai-option").forEach(option => {
+
+        option.classList.remove("selected");
+
+        const aiName = option.dataset.ai;
+
+        if (!aiName) {
+            return;
+        }
+
+        const officialName = getOfficialAIName(aiName);
+
+        if (
+            officialName &&
+            selectedAIs.includes(officialName)
+        ) {
+            option.classList.add("selected");
+        }
+    });
 }
 
 
@@ -37,6 +98,7 @@ function selectAI(ai) {
 // -----------------------------
 
 function setMode(newMode) {
+
     mode = newMode;
 
     console.log("Mode changed to:", mode);
@@ -46,15 +108,30 @@ function setMode(newMode) {
     });
 
     document.querySelectorAll(".mode-button").forEach(button => {
-        const buttonText = button.textContent.trim().toLowerCase();
+
+        const buttonText =
+            button.textContent.trim().toLowerCase();
 
         if (
-            (newMode === "one" && buttonText.includes("one ai")) ||
-            (newMode === "council" && buttonText.includes("ai council"))
+            (newMode === "one" &&
+                buttonText.includes("one ai")) ||
+
+            (newMode === "council" &&
+                buttonText.includes("ai council"))
         ) {
             button.classList.add("active");
         }
     });
+
+    // In One AI mode, only keep the first selected AI
+    if (mode === "one" && selectedAIs.length > 1) {
+
+        selectedAIs = [
+            selectedAIs[0]
+        ];
+
+        updateAISelection();
+    }
 }
 
 
@@ -63,20 +140,46 @@ function setMode(newMode) {
 // -----------------------------
 
 function addAI() {
-    const aiName = prompt("Enter the AI name:");
 
-    if (!aiName) {
+    const aiNameInput =
+        prompt(
+            "Enter the AI name:\n\n" +
+            "Examples: ChatGPT, Gemini, Claude, Copilot, Base44"
+        );
+
+    if (!aiNameInput) {
         return;
     }
 
-    if (selectedAIs.includes(aiName)) {
-        alert(`${aiName} is already selected.`);
+    const officialAI =
+        getOfficialAIName(aiNameInput);
+
+    if (!officialAI) {
+
+        alert(
+            `"${aiNameInput}" isn't a supported AI yet.`
+        );
+
         return;
     }
 
-    selectedAIs.push(aiName);
+    if (selectedAIs.includes(officialAI)) {
 
-    console.log("Added AI:", aiName);
+        alert(
+            `${officialAI} is already selected.`
+        );
+
+        return;
+    }
+
+    selectedAIs.push(officialAI);
+
+    updateAISelection();
+
+    console.log(
+        "Added AI:",
+        officialAI
+    );
 }
 
 
@@ -85,26 +188,40 @@ function addAI() {
 // -----------------------------
 
 function addMessage(type, text) {
-    const chat = document.getElementById("chat");
+
+    const chat =
+        document.getElementById("chat");
 
     if (!chat) {
-        console.error("Chat element not found.");
+
+        console.error(
+            "Chat element not found."
+        );
+
         return null;
     }
 
-    const message = document.createElement("div");
+    const message =
+        document.createElement("div");
 
-    message.className = `message ${type}`;
+    message.className =
+        `message ${type}`;
 
-    const content = document.createElement("div");
+    const content =
+        document.createElement("div");
 
-    content.className = "message-content";
-    content.textContent = text;
+    content.className =
+        "message-content";
+
+    content.textContent =
+        text;
 
     message.appendChild(content);
+
     chat.appendChild(message);
 
-    chat.scrollTop = chat.scrollHeight;
+    chat.scrollTop =
+        chat.scrollHeight;
 
     return message;
 }
@@ -115,8 +232,14 @@ function addMessage(type, text) {
 // -----------------------------
 
 function handleKey(event) {
-    if (event.key === "Enter" && !event.shiftKey) {
+
+    if (
+        event.key === "Enter" &&
+        !event.shiftKey
+    ) {
+
         event.preventDefault();
+
         sendMessage();
     }
 }
@@ -128,25 +251,41 @@ function handleKey(event) {
 
 async function sendMessage() {
 
-    const input = document.getElementById("messageInput");
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
 
     if (!input) {
-        console.error("messageInput not found.");
+
+        console.error(
+            "messageInput not found."
+        );
+
         return;
     }
 
-    const text = input.value.trim();
+    const text =
+        input.value.trim();
 
     if (!text) {
         return;
     }
 
     if (selectedAIs.length === 0) {
-        addMessage("system", "Please select an AI first.");
+
+        addMessage(
+            "system",
+            "Please select an AI first."
+        );
+
         return;
     }
 
-    addMessage("user", text);
+    addMessage(
+        "user",
+        text
+    );
 
     input.value = "";
 
@@ -157,45 +296,62 @@ async function sendMessage() {
 
     if (mode === "one") {
 
-        const selectedAI = selectedAIs[0];
+        const selectedAI =
+            selectedAIs[0];
 
-        console.log("Sending to:", selectedAI);
+        console.log(
+            "Sending to:",
+            selectedAI
+        );
 
 
         // CHATGPT
         if (selectedAI === "ChatGPT") {
 
-            const thinkingMessage = addMessage(
-                "ai",
-                "ChatGPT is thinking..."
-            );
+            const thinkingMessage =
+                addMessage(
+                    "ai",
+                    "ChatGPT is thinking..."
+                );
 
             try {
 
-                const response = await fetch("/api/chat", {
-                    method: "POST",
+                const response =
+                    await fetch(
+                        "/api/chat",
+                        {
+                            method: "POST",
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-                    body: JSON.stringify({
-                        message: text
-                    })
-                });
+                            body: JSON.stringify({
+                                message: text
+                            })
+                        }
+                    );
 
-                const data = await response.json();
+                const data =
+                    await response.json();
 
                 thinkingMessage.querySelector(
                     ".message-content"
                 ).textContent =
                     data.response ||
                     "ChatGPT error: " +
-                    (data.error || "Unknown error");
+                    (
+                        data.error ||
+                        "Unknown error"
+                    );
 
             } catch (error) {
 
-                console.error("ChatGPT error:", error);
+                console.error(
+                    "ChatGPT error:",
+                    error
+                );
 
                 thinkingMessage.querySelector(
                     ".message-content"
@@ -210,37 +366,50 @@ async function sendMessage() {
         // GEMINI
         if (selectedAI === "Gemini") {
 
-            const thinkingMessage = addMessage(
-                "ai",
-                "Gemini is thinking..."
-            );
+            const thinkingMessage =
+                addMessage(
+                    "ai",
+                    "Gemini is thinking..."
+                );
 
             try {
 
-                const response = await fetch("/api/gemini", {
-                    method: "POST",
+                const response =
+                    await fetch(
+                        "/api/gemini",
+                        {
+                            method: "POST",
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-                    body: JSON.stringify({
-                        message: text
-                    })
-                });
+                            body: JSON.stringify({
+                                message: text
+                            })
+                        }
+                    );
 
-                const data = await response.json();
+                const data =
+                    await response.json();
 
                 thinkingMessage.querySelector(
                     ".message-content"
                 ).textContent =
                     data.response ||
                     "Gemini error: " +
-                    (data.error || "Unknown error");
+                    (
+                        data.error ||
+                        "Unknown error"
+                    );
 
             } catch (error) {
 
-                console.error("Gemini error:", error);
+                console.error(
+                    "Gemini error:",
+                    error
+                );
 
                 thinkingMessage.querySelector(
                     ".message-content"
@@ -252,7 +421,7 @@ async function sendMessage() {
         }
 
 
-        // OTHER AI DEMO
+        // OTHER AI
         addMessage(
             "ai",
             aiResponses[selectedAI] ||
@@ -274,31 +443,41 @@ async function sendMessage() {
             selectedAIs
         );
 
-        for (const ai of selectedAIs) {
+        for (
+            const ai of selectedAIs
+        ) {
+
 
             // CHATGPT
             if (ai === "ChatGPT") {
 
-                const thinkingMessage = addMessage(
-                    "ai",
-                    "ChatGPT is thinking..."
-                );
+                const thinkingMessage =
+                    addMessage(
+                        "ai",
+                        "ChatGPT is thinking..."
+                    );
 
                 try {
 
-                    const response = await fetch("/api/chat", {
-                        method: "POST",
+                    const response =
+                        await fetch(
+                            "/api/chat",
+                            {
+                                method: "POST",
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
 
-                        body: JSON.stringify({
-                            message: text
-                        })
-                    });
+                                body: JSON.stringify({
+                                    message: text
+                                })
+                            }
+                        );
 
-                    const data = await response.json();
+                    const data =
+                        await response.json();
 
                     thinkingMessage.querySelector(
                         ".message-content"
@@ -312,7 +491,10 @@ async function sendMessage() {
 
                 } catch (error) {
 
-                    console.error("ChatGPT error:", error);
+                    console.error(
+                        "ChatGPT error:",
+                        error
+                    );
 
                     thinkingMessage.querySelector(
                         ".message-content"
@@ -326,26 +508,33 @@ async function sendMessage() {
             // GEMINI
             else if (ai === "Gemini") {
 
-                const thinkingMessage = addMessage(
-                    "ai",
-                    "Gemini is thinking..."
-                );
+                const thinkingMessage =
+                    addMessage(
+                        "ai",
+                        "Gemini is thinking..."
+                    );
 
                 try {
 
-                    const response = await fetch("/api/gemini", {
-                        method: "POST",
+                    const response =
+                        await fetch(
+                            "/api/gemini",
+                            {
+                                method: "POST",
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
 
-                        body: JSON.stringify({
-                            message: text
-                        })
-                    });
+                                body: JSON.stringify({
+                                    message: text
+                                })
+                            }
+                        );
 
-                    const data = await response.json();
+                    const data =
+                        await response.json();
 
                     thinkingMessage.querySelector(
                         ".message-content"
@@ -359,7 +548,10 @@ async function sendMessage() {
 
                 } catch (error) {
 
-                    console.error("Gemini error:", error);
+                    console.error(
+                        "Gemini error:",
+                        error
+                    );
 
                     thinkingMessage.querySelector(
                         ".message-content"
@@ -373,13 +565,20 @@ async function sendMessage() {
             // OTHER AI
             else {
 
-                await new Promise(resolve =>
-                    setTimeout(resolve, 500)
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            500
+                        )
                 );
 
                 addMessage(
                     "ai",
-                    `${ai}: I'm currently in demo mode.`
+                    `${ai}: ${
+                        aiResponses[ai] ||
+                        "I'm currently in demo mode."
+                    }`
                 );
             }
         }
@@ -391,15 +590,23 @@ async function sendMessage() {
 // STARTUP
 // -----------------------------
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    const input = document.getElementById("messageInput");
+        const input =
+            document.getElementById(
+                "messageInput"
+            );
 
-    if (input) {
-        input.addEventListener(
-            "keydown",
-            handleKey
-        );
+        if (input) {
+
+            input.addEventListener(
+                "keydown",
+                handleKey
+            );
+        }
+
+        updateAISelection();
     }
-
-});
+);
