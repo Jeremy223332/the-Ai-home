@@ -7,7 +7,6 @@ let mode = "one";
     Claude: "Hello! I'm Claude.",
     Copilot: "Hello! I'm Copilot.",
     Replit: "Hello! I'm Replit.",
-    Framer: "Hello! I'm Framer.",
     Base44: "I'm currently in demo mode.",
     v0: "Hello! I'm v0. I can help build websites and apps."
 };
