@@ -11,5 +11,7 @@
     "openai": "^5.0.0",
     "@google/genai": "^1.0.0",
     "@anthropic-ai/sdk": "^0.60.0"
+     "framer-api": "^1.0.0"
   }
+
 }
