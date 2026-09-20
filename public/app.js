@@ -463,4 +463,3 @@ window.setMode = setMode;
 window.newChat = newChat;
 window.sendMessage = sendMessage;
 window.examplePrompt = examplePrompt;
-```
