@@ -131,7 +131,61 @@ async function sendMessage() {
             "ai",
             "ChatGPT is thinking..."
         );
+    // -------------------------
+    // GEMINI
+    // -------------------------
 
+    if (mode === "one" && selectedAIs[0] === "Gemini") {
+
+        const thinkingMessage = addMessage(
+            "ai",
+            "Gemini is thinking..."
+        );
+
+        try {
+
+            const response = await fetch("/api/gemini", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: text
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.response) {
+
+                thinkingMessage.querySelector(
+                    ".message-content"
+                ).textContent = data.response;
+
+            } else {
+
+                thinkingMessage.querySelector(
+                    ".message-content"
+                ).textContent =
+                    "Error: " + (data.error || "Unknown error");
+
+            }
+
+        } catch (error) {
+
+            console.error("Gemini error:", error);
+
+            thinkingMessage.querySelector(
+                ".message-content"
+            ).textContent =
+                "Could not connect to Gemini.";
+
+        }
+
+        return;
+    }
         try {
 
             const response = await fetch("/api/chat", {
