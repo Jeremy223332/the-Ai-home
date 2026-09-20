@@ -54,6 +54,28 @@ function setMode(newMode) {
 
 
 // -----------------------------
+// ADD AI
+// -----------------------------
+
+function addAI() {
+    const aiName = prompt("Enter the AI name:");
+
+    if (!aiName) {
+        return;
+    }
+
+    if (selectedAIs.includes(aiName)) {
+        alert(`${aiName} is already selected.`);
+        return;
+    }
+
+    selectedAIs.push(aiName);
+
+    console.log("Added AI:", aiName);
+}
+
+
+// -----------------------------
 // ADD MESSAGE
 // -----------------------------
 
