@@ -27,6 +27,8 @@ function selectAI(ai) {
     if (selected) {
         selected.classList.add("selected");
     }
+
+    console.log("Selected AI:", ai);
 }
 
 
@@ -121,21 +123,74 @@ async function sendMessage() {
 
     input.value = "";
 
+    const selectedAI = selectedAIs[0];
+
+    console.log("Sending to:", selectedAI);
+
+
     // -------------------------
     // CHATGPT
     // -------------------------
 
-    if (mode === "one" && selectedAIs[0] === "ChatGPT") {
+    if (mode === "one" && selectedAI === "ChatGPT") {
 
         const thinkingMessage = addMessage(
             "ai",
             "ChatGPT is thinking..."
         );
+
+        try {
+
+            const response = await fetch("/api/chat", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: text
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.response) {
+
+                thinkingMessage.querySelector(
+                    ".message-content"
+                ).textContent = data.response;
+
+            } else {
+
+                thinkingMessage.querySelector(
+                    ".message-content"
+                ).textContent =
+                    "ChatGPT error: " +
+                    (data.error || "Unknown error");
+
+            }
+
+        } catch (error) {
+
+            console.error("ChatGPT error:", error);
+
+            thinkingMessage.querySelector(
+                ".message-content"
+            ).textContent =
+                "Could not connect to ChatGPT.";
+
+        }
+
+        return;
+    }
+
+
     // -------------------------
     // GEMINI
     // -------------------------
 
-    if (mode === "one" && selectedAIs[0] === "Gemini") {
+    if (mode === "one" && selectedAI === "Gemini") {
 
         const thinkingMessage = addMessage(
             "ai",
@@ -169,7 +224,8 @@ async function sendMessage() {
                 thinkingMessage.querySelector(
                     ".message-content"
                 ).textContent =
-                    "Error: " + (data.error || "Unknown error");
+                    "Gemini error: " +
+                    (data.error || "Unknown error");
 
             }
 
@@ -186,66 +242,20 @@ async function sendMessage() {
 
         return;
     }
-        try {
-
-            const response = await fetch("/api/chat", {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    message: text
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.response) {
-
-                thinkingMessage.querySelector(
-                    ".message-content"
-                ).textContent = data.response;
-
-            } else {
-
-                thinkingMessage.querySelector(
-                    ".message-content"
-                ).textContent =
-                    "Error: " + (data.error || "Unknown error");
-
-            }
-
-        } catch (error) {
-
-            console.error("ChatGPT error:", error);
-
-            thinkingMessage.querySelector(
-                ".message-content"
-            ).textContent =
-                "Could not connect to the AI server.";
-
-        }
-
-        return;
-    }
 
 
     // -------------------------
-    // DEMO AI
+    // OTHER AI DEMO
     // -------------------------
 
     if (mode === "one") {
-
-        const ai = selectedAIs[0];
 
         setTimeout(() => {
 
             addMessage(
                 "ai",
-                aiResponses[ai] ||
-                `${ai} is currently in demo mode.`
+                aiResponses[selectedAI] ||
+                `${selectedAI} is currently in demo mode.`
             );
 
         }, 500);
