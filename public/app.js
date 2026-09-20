@@ -39,17 +39,22 @@ function selectAI(ai) {
 function setMode(newMode) {
     mode = newMode;
 
+    console.log("Mode changed to:", mode);
+
     document.querySelectorAll(".mode-button").forEach(button => {
         button.classList.remove("active");
     });
 
-    const button = document.querySelector(
-        `[data-mode="${newMode}"]`
-    );
+    document.querySelectorAll(".mode-button").forEach(button => {
+        const buttonText = button.textContent.trim().toLowerCase();
 
-    if (button) {
-        button.classList.add("active");
-    }
+        if (
+            (newMode === "one" && buttonText.includes("one ai")) ||
+            (newMode === "council" && buttonText.includes("ai council"))
+        ) {
+            button.classList.add("active");
+        }
+    });
 }
 
 
@@ -145,163 +150,238 @@ async function sendMessage() {
 
     input.value = "";
 
-    const selectedAI = selectedAIs[0];
-
-    console.log("Sending to:", selectedAI);
-
 
     // -------------------------
-    // CHATGPT
-    // -------------------------
-
-    if (mode === "one" && selectedAI === "ChatGPT") {
-
-        const thinkingMessage = addMessage(
-            "ai",
-            "ChatGPT is thinking..."
-        );
-
-        try {
-
-            const response = await fetch("/api/chat", {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    message: text
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.response) {
-
-                thinkingMessage.querySelector(
-                    ".message-content"
-                ).textContent = data.response;
-
-            } else {
-
-                thinkingMessage.querySelector(
-                    ".message-content"
-                ).textContent =
-                    "ChatGPT error: " +
-                    (data.error || "Unknown error");
-
-            }
-
-        } catch (error) {
-
-            console.error("ChatGPT error:", error);
-
-            thinkingMessage.querySelector(
-                ".message-content"
-            ).textContent =
-                "Could not connect to ChatGPT.";
-
-        }
-
-        return;
-    }
-
-
-    // -------------------------
-    // GEMINI
-    // -------------------------
-
-    if (mode === "one" && selectedAI === "Gemini") {
-
-        const thinkingMessage = addMessage(
-            "ai",
-            "Gemini is thinking..."
-        );
-
-        try {
-
-            const response = await fetch("/api/gemini", {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    message: text
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.response) {
-
-                thinkingMessage.querySelector(
-                    ".message-content"
-                ).textContent = data.response;
-
-            } else {
-
-                thinkingMessage.querySelector(
-                    ".message-content"
-                ).textContent =
-                    "Gemini error: " +
-                    (data.error || "Unknown error");
-
-            }
-
-        } catch (error) {
-
-            console.error("Gemini error:", error);
-
-            thinkingMessage.querySelector(
-                ".message-content"
-            ).textContent =
-                "Could not connect to Gemini.";
-
-        }
-
-        return;
-    }
-
-
-    // -------------------------
-    // OTHER AI DEMO
+    // ONE AI MODE
     // -------------------------
 
     if (mode === "one") {
 
-        setTimeout(() => {
+        const selectedAI = selectedAIs[0];
 
-            addMessage(
+        console.log("Sending to:", selectedAI);
+
+
+        // CHATGPT
+        if (selectedAI === "ChatGPT") {
+
+            const thinkingMessage = addMessage(
                 "ai",
-                aiResponses[selectedAI] ||
-                `${selectedAI} is currently in demo mode.`
+                "ChatGPT is thinking..."
             );
 
-        }, 500);
+            try {
+
+                const response = await fetch("/api/chat", {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        message: text
+                    })
+                });
+
+                const data = await response.json();
+
+                thinkingMessage.querySelector(
+                    ".message-content"
+                ).textContent =
+                    data.response ||
+                    "ChatGPT error: " +
+                    (data.error || "Unknown error");
+
+            } catch (error) {
+
+                console.error("ChatGPT error:", error);
+
+                thinkingMessage.querySelector(
+                    ".message-content"
+                ).textContent =
+                    "Could not connect to ChatGPT.";
+            }
+
+            return;
+        }
+
+
+        // GEMINI
+        if (selectedAI === "Gemini") {
+
+            const thinkingMessage = addMessage(
+                "ai",
+                "Gemini is thinking..."
+            );
+
+            try {
+
+                const response = await fetch("/api/gemini", {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        message: text
+                    })
+                });
+
+                const data = await response.json();
+
+                thinkingMessage.querySelector(
+                    ".message-content"
+                ).textContent =
+                    data.response ||
+                    "Gemini error: " +
+                    (data.error || "Unknown error");
+
+            } catch (error) {
+
+                console.error("Gemini error:", error);
+
+                thinkingMessage.querySelector(
+                    ".message-content"
+                ).textContent =
+                    "Could not connect to Gemini.";
+            }
+
+            return;
+        }
+
+
+        // OTHER AI DEMO
+        addMessage(
+            "ai",
+            aiResponses[selectedAI] ||
+            `${selectedAI} is currently in demo mode.`
+        );
 
         return;
     }
 
 
     // -------------------------
-    // AI COUNCIL
+    // AI COUNCIL MODE
     // -------------------------
 
     if (mode === "council") {
 
+        console.log(
+            "Council members:",
+            selectedAIs
+        );
+
         for (const ai of selectedAIs) {
 
-            await new Promise(resolve =>
-                setTimeout(resolve, 500)
-            );
+            // CHATGPT
+            if (ai === "ChatGPT") {
 
-            addMessage(
-                "ai",
-                `${ai}: I'm considering your question.`
-            );
+                const thinkingMessage = addMessage(
+                    "ai",
+                    "ChatGPT is thinking..."
+                );
+
+                try {
+
+                    const response = await fetch("/api/chat", {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            message: text
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    thinkingMessage.querySelector(
+                        ".message-content"
+                    ).textContent =
+                        "ChatGPT: " +
+                        (
+                            data.response ||
+                            data.error ||
+                            "No response."
+                        );
+
+                } catch (error) {
+
+                    console.error("ChatGPT error:", error);
+
+                    thinkingMessage.querySelector(
+                        ".message-content"
+                    ).textContent =
+                        "ChatGPT: Connection error.";
+                }
+
+            }
+
+
+            // GEMINI
+            else if (ai === "Gemini") {
+
+                const thinkingMessage = addMessage(
+                    "ai",
+                    "Gemini is thinking..."
+                );
+
+                try {
+
+                    const response = await fetch("/api/gemini", {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            message: text
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    thinkingMessage.querySelector(
+                        ".message-content"
+                    ).textContent =
+                        "Gemini: " +
+                        (
+                            data.response ||
+                            data.error ||
+                            "No response."
+                        );
+
+                } catch (error) {
+
+                    console.error("Gemini error:", error);
+
+                    thinkingMessage.querySelector(
+                        ".message-content"
+                    ).textContent =
+                        "Gemini: Connection error.";
+                }
+
+            }
+
+
+            // OTHER AI
+            else {
+
+                await new Promise(resolve =>
+                    setTimeout(resolve, 500)
+                );
+
+                addMessage(
+                    "ai",
+                    `${ai}: I'm currently in demo mode.`
+                );
+            }
         }
     }
 }
@@ -316,7 +396,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("messageInput");
 
     if (input) {
-        input.addEventListener("keydown", handleKey);
+        input.addEventListener(
+            "keydown",
+            handleKey
+        );
     }
 
 });
