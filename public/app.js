@@ -1,3 +1,4 @@
+```javascript
 let selectedAIs = ["ChatGPT"];
 let mode = "one";
 
@@ -35,7 +36,7 @@ const aiNames = [
 
 
 // =============================
-// OFFICIAL AI NAME
+// GET OFFICIAL AI NAME
 // =============================
 
 function getOfficialAIName(name) {
@@ -66,16 +67,15 @@ function updateAISelection() {
         )
         .forEach(checkbox => {
 
-            const aiName =
+            const ai =
                 getOfficialAIName(
                     checkbox.value
                 );
 
             checkbox.checked =
-                !!aiName &&
-                selectedAIs.includes(
-                    aiName
-                );
+                !!ai &&
+                selectedAIs.includes(ai);
+
         });
 
 
@@ -126,7 +126,7 @@ function updateSelectedInfo() {
 
 
 // =============================
-// MODE SWITCHING
+// MODE
 // =============================
 
 function setMode(newMode) {
@@ -135,32 +135,33 @@ function setMode(newMode) {
         newMode = "one";
     }
 
+
     mode = newMode;
 
 
-    const singleButton =
+    const singleMode =
         document.getElementById(
             "singleMode"
         );
 
-    const councilButton =
+    const councilMode =
         document.getElementById(
             "councilMode"
         );
 
 
-    if (singleButton) {
+    if (singleMode) {
 
-        singleButton.classList.toggle(
+        singleMode.classList.toggle(
             "active",
             mode === "one"
         );
     }
 
 
-    if (councilButton) {
+    if (councilMode) {
 
-        councilButton.classList.toggle(
+        councilMode.classList.toggle(
             "active",
             mode === "council"
         );
@@ -222,6 +223,11 @@ function addMessage(type, text) {
 
 
     if (!chat) {
+
+        console.error(
+            "Chat area not found."
+        );
+
         return null;
     }
 
@@ -232,7 +238,7 @@ function addMessage(type, text) {
         );
 
     message.className =
-        `message ${type}`;
+        "message " + type;
 
 
     const avatar =
@@ -256,7 +262,6 @@ function addMessage(type, text) {
 
     content.className =
         "message-content";
-
 
     content.textContent =
         text;
@@ -407,12 +412,6 @@ function getBuilderProjectType(message) {
 
 function openBuilder(message) {
 
-    console.log(
-        "BUILDER DETECTED:",
-        message
-    );
-
-
     const panel =
         document.getElementById(
             "builderPanel"
@@ -422,11 +421,7 @@ function openBuilder(message) {
     if (!panel) {
 
         console.error(
-            "ERROR: builderPanel was not found."
-        );
-
-        alert(
-            "Builder panel could not be found. Make sure index.html was updated."
+            "builderPanel was not found."
         );
 
         return;
@@ -445,7 +440,7 @@ function openBuilder(message) {
         );
 
 
-    const builderStatus =
+    const status =
         document.getElementById(
             "builderStatus"
         );
@@ -473,9 +468,9 @@ function openBuilder(message) {
     }
 
 
-    if (builderStatus) {
+    if (status) {
 
-        builderStatus.textContent =
+        status.textContent =
             "The AIs are building...";
     }
 
@@ -518,11 +513,6 @@ function openBuilder(message) {
 
     addBuilderLog(
         "🧠 ChatGPT is planning the project..."
-    );
-
-
-    console.log(
-        "Builder panel opened."
     );
 }
 
@@ -574,7 +564,6 @@ function addBuilderLog(message) {
     item.className =
         "builder-log-item";
 
-
     item.textContent =
         message;
 
@@ -599,722 +588,4 @@ function clearBuilderLog() {
         document.getElementById(
             "builderLog"
         );
-
-
-    if (!log) {
-        return;
-    }
-
-
-    log.innerHTML = "";
-}
-
-
-// =============================
-// BUILDER AI STATUS
-// =============================
-
-function updateBuilderAgent(
-    agent,
-    status
-) {
-
-    const element =
-        document.getElementById(
-            agent
-        );
-
-
-    if (!element) {
-        return;
-    }
-
-
-    const statusElement =
-        element.querySelector(
-            "span"
-        );
-
-
-    if (statusElement) {
-
-        statusElement.textContent =
-            status;
-    }
-}
-
-
-// =============================
-// CHATGPT REQUEST
-// =============================
-
-async function askChatGPT(message) {
-
-    const response =
-        await fetch(
-            "/api/chat",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-                    message
-                })
-            }
-        );
-
-
-    return await response.json();
-}
-
-
-// =============================
-// GEMINI REQUEST
-// =============================
-
-async function askGemini(message) {
-
-    const response =
-        await fetch(
-            "/api/gemini",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-                    message
-                })
-            }
-        );
-
-
-    return await response.json();
-}
-
-
-// =============================
-// V0 REQUEST
-// =============================
-
-async function askV0(message) {
-
-    const response =
-        await fetch(
-            "/api/v0",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-                    message
-                })
-            }
-        );
-
-
-    return await response.json();
-}
-
-
-// =============================
-// SEND MESSAGE
-// =============================
-
-async function sendMessage() {
-
-    const input =
-        document.getElementById(
-            "messageInput"
-        );
-
-
-    if (!input) {
-
-        console.error(
-            "messageInput not found."
-        );
-
-        return;
-    }
-
-
-    const text =
-        input.value.trim();
-
-
-    if (!text) {
-        return;
-    }
-
-
-    if (
-        selectedAIs.length === 0
-    ) {
-
-        addMessage(
-            "system",
-            "Please select an AI first."
-        );
-
-        return;
-    }
-
-
-    addMessage(
-        "user",
-        text
-    );
-
-
-    input.value = "";
-
-
-    // =========================
-    // BUILDER MODE
-    // =========================
-
-    if (
-        isBuilderRequest(text)
-    ) {
-
-        console.log(
-            "Opening Builder Mode..."
-        );
-
-
-        openBuilder(text);
-
-        return;
-    }
-
-
-    // =========================
-    // ONE AI MODE
-    // =========================
-
-    if (mode === "one") {
-
-        const selectedAI =
-            selectedAIs[0];
-
-
-        if (
-            selectedAI === "ChatGPT"
-        ) {
-
-            const thinkingMessage =
-                addMessage(
-                    "ai",
-                    "ChatGPT is thinking..."
-                );
-
-
-            try {
-
-                const data =
-                    await askChatGPT(
-                        text
-                    );
-
-
-                thinkingMessage
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        data.response ||
-                        data.error ||
-                        "ChatGPT returned no response.";
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                thinkingMessage
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "Could not connect to ChatGPT.";
-            }
-
-
-            return;
-        }
-
-
-        if (
-            selectedAI === "Gemini"
-        ) {
-
-            const thinkingMessage =
-                addMessage(
-                    "ai",
-                    "Gemini is thinking..."
-                );
-
-
-            try {
-
-                const data =
-                    await askGemini(
-                        text
-                    );
-
-
-                thinkingMessage
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        data.response ||
-                        data.error ||
-                        "Gemini returned no response.";
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                thinkingMessage
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "Could not connect to Gemini.";
-            }
-
-
-            return;
-        }
-
-
-        if (
-            selectedAI === "Claude"
-        ) {
-
-            addMessage(
-                "ai",
-                aiResponses.Claude
-            );
-
-            return;
-        }
-
-
-        if (
-            selectedAI === "v0"
-        ) {
-
-            const thinkingMessage =
-                addMessage(
-                    "ai",
-                    "v0 is building..."
-                );
-
-
-            try {
-
-                const data =
-                    await askV0(
-                        text
-                    );
-
-
-                thinkingMessage
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        data.response ||
-                        data.error ||
-                        "v0 returned no response.";
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                thinkingMessage
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "Could not connect to v0.";
-            }
-
-
-            return;
-        }
-
-
-        addMessage(
-            "ai",
-            aiResponses[selectedAI] ||
-            `${selectedAI} is currently in demo mode.`
-        );
-
-        return;
-    }
-
-
-    // =========================
-    // COUNCIL MODE
-    // =========================
-
-    for (
-        const ai of selectedAIs
-    ) {
-
-        if (
-            ai === "ChatGPT"
-        ) {
-
-            const message =
-                addMessage(
-                    "ai",
-                    "ChatGPT is thinking..."
-                );
-
-
-            try {
-
-                const data =
-                    await askChatGPT(
-                        text
-                    );
-
-
-                message
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "ChatGPT: " +
-                        (
-                            data.response ||
-                            data.error ||
-                            "No response."
-                        );
-
-            } catch (error) {
-
-                message
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "ChatGPT: Connection error.";
-            }
-        }
-
-
-        else if (
-            ai === "Gemini"
-        ) {
-
-            const message =
-                addMessage(
-                    "ai",
-                    "Gemini is thinking..."
-                );
-
-
-            try {
-
-                const data =
-                    await askGemini(
-                        text
-                    );
-
-
-                message
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "Gemini: " +
-                        (
-                            data.response ||
-                            data.error ||
-                            "No response."
-                        );
-
-            } catch (error) {
-
-                message
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "Gemini: Connection error.";
-            }
-        }
-
-
-        else if (
-            ai === "v0"
-        ) {
-
-            const message =
-                addMessage(
-                    "ai",
-                    "v0 is building..."
-                );
-
-
-            try {
-
-                const data =
-                    await askV0(
-                        text
-                    );
-
-
-                message
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "v0: " +
-                        (
-                            data.response ||
-                            data.error ||
-                            "No response."
-                        );
-
-            } catch (error) {
-
-                message
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        "v0: Connection error.";
-            }
-        }
-
-
-        else {
-
-            addMessage(
-                "ai",
-                `${ai}: ${
-                    aiResponses[ai] ||
-                    "I'm currently in demo mode."
-                }`
-            );
-        }
-    }
-}
-
-
-// =============================
-// NEW CHAT
-// =============================
-
-function newChat() {
-
-    const chat =
-        document.getElementById(
-            "chat"
-        );
-
-
-    if (chat) {
-        chat.innerHTML = "";
-    }
-
-
-    const title =
-        document.getElementById(
-            "conversationTitle"
-        );
-
-
-    if (title) {
-
-        title.textContent =
-            "New Conversation";
-    }
-
-
-    closeBuilder();
-}
-
-
-// =============================
-// EXAMPLE PROMPT
-// =============================
-
-function examplePrompt(text) {
-
-    const input =
-        document.getElementById(
-            "messageInput"
-        );
-
-
-    if (!input) {
-        return;
-    }
-
-
-    input.value =
-        text;
-
-    input.focus();
-}
-
-
-// =============================
-// KEYBOARD
-// =============================
-
-function handleKey(event) {
-
-    if (
-        event.key === "Enter" &&
-        !event.shiftKey
-    ) {
-
-        event.preventDefault();
-
-        sendMessage();
-    }
-}
-
-
-// =============================
-// STARTUP
-// =============================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        console.log(
-            "AI Council loaded."
-        );
-
-
-        const input =
-            document.getElementById(
-                "messageInput"
-            );
-
-
-        if (input) {
-
-            input.addEventListener(
-                "keydown",
-                handleKey
-            );
-        }
-
-
-        document
-            .querySelectorAll(
-                "#aiList input[type='checkbox']"
-            )
-            .forEach(checkbox => {
-
-                checkbox.addEventListener(
-                    "change",
-                    () => {
-
-                        const ai =
-                            getOfficialAIName(
-                                checkbox.value
-                            );
-
-
-                        if (!ai) {
-                            return;
-                        }
-
-
-                        if (
-                            checkbox.checked
-                        ) {
-
-                            if (
-                                mode === "one"
-                            ) {
-
-                                selectedAIs = [
-                                    ai
-                                ];
-
-                            } else {
-
-                                if (
-                                    !selectedAIs.includes(
-                                        ai
-                                    )
-                                ) {
-
-                                    selectedAIs.push(
-                                        ai
-                                    );
-                                }
-                            }
-
-                        } else {
-
-                            selectedAIs =
-                                selectedAIs.filter(
-                                    name =>
-                                        name !== ai
-                                );
-                        }
-
-
-                        updateAISelection();
-                    }
-                );
-            });
-
-
-        const closeBuilderButton =
-            document.getElementById(
-                "closeBuilder"
-            );
-
-
-        if (
-            closeBuilderButton
-        ) {
-
-            closeBuilderButton.addEventListener(
-                "click",
-                closeBuilder
-            );
-        }
-
-
-        updateAISelection();
-
-        setMode("one");
-
-    }
-);
+```
