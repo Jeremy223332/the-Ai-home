@@ -1,3 +1,4 @@
+```javascript
 let selectedAIs = ["ChatGPT"];
 let mode = "one";
 
@@ -19,8 +20,7 @@ function addMessage(type, text) {
     const message =
         document.createElement("div");
 
-    message.className =
-        `message ${type}`;
+    message.className = `message ${type}`;
 
     const avatar =
         document.createElement("div");
@@ -33,8 +33,7 @@ function addMessage(type, text) {
     const content =
         document.createElement("div");
 
-    content.className =
-        "message-content";
+    content.className = "message-content";
 
     content.textContent = text;
 
@@ -62,9 +61,7 @@ async function sendMessage() {
         document.getElementById("messageInput");
 
     if (!input) {
-        console.error(
-            "messageInput was not found."
-        );
+        console.error("messageInput was not found.");
         return;
     }
 
@@ -72,25 +69,13 @@ async function sendMessage() {
         input.value.trim();
 
     if (!text) {
-        console.log("Message is empty.");
         return;
     }
 
-    console.log(
-        "Sending message:",
-        text
-    );
+    addMessage("user", text);
 
-    // Show user's message
-    addMessage(
-        "user",
-        text
-    );
-
-    // Clear textbox
     input.value = "";
 
-    // Make sure an AI is selected
     if (selectedAIs.length === 0) {
 
         addMessage(
@@ -101,13 +86,12 @@ async function sendMessage() {
         return;
     }
 
+
     // =============================
     // CHATGPT
     // =============================
 
-    if (
-        selectedAIs.includes("ChatGPT")
-    ) {
+    if (selectedAIs.includes("ChatGPT")) {
 
         const message =
             addMessage(
@@ -138,30 +122,12 @@ async function sendMessage() {
             const data =
                 await response.json();
 
-            console.log(
-                "ChatGPT response:",
-                data
-            );
-
-            if (data.response) {
-
-                message
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        data.response;
-
-            } else {
-
-                message
-                    .querySelector(
-                        ".message-content"
-                    )
-                    .textContent =
-                        data.error ||
-                        "ChatGPT returned no response.";
-            }
+            message.querySelector(
+                ".message-content"
+            ).textContent =
+                data.response ||
+                data.error ||
+                "ChatGPT returned no response.";
 
         } catch (error) {
 
@@ -170,12 +136,10 @@ async function sendMessage() {
                 error
             );
 
-            message
-                .querySelector(
-                    ".message-content"
-                )
-                .textContent =
-                    "Could not connect to ChatGPT.";
+            message.querySelector(
+                ".message-content"
+            ).textContent =
+                "Could not connect to ChatGPT.";
         }
 
         return;
@@ -186,9 +150,7 @@ async function sendMessage() {
     // GEMINI
     // =============================
 
-    if (
-        selectedAIs.includes("Gemini")
-    ) {
+    if (selectedAIs.includes("Gemini")) {
 
         const message =
             addMessage(
@@ -219,14 +181,12 @@ async function sendMessage() {
             const data =
                 await response.json();
 
-            message
-                .querySelector(
-                    ".message-content"
-                )
-                .textContent =
-                    data.response ||
-                    data.error ||
-                    "Gemini returned no response.";
+            message.querySelector(
+                ".message-content"
+            ).textContent =
+                data.response ||
+                data.error ||
+                "Gemini returned no response.";
 
         } catch (error) {
 
@@ -235,12 +195,10 @@ async function sendMessage() {
                 error
             );
 
-            message
-                .querySelector(
-                    ".message-content"
-                )
-                .textContent =
-                    "Could not connect to Gemini.";
+            message.querySelector(
+                ".message-content"
+            ).textContent =
+                "Could not connect to Gemini.";
         }
 
         return;
@@ -251,9 +209,7 @@ async function sendMessage() {
     // CLAUDE
     // =============================
 
-    if (
-        selectedAIs.includes("Claude")
-    ) {
+    if (selectedAIs.includes("Claude")) {
 
         const message =
             addMessage(
@@ -284,14 +240,12 @@ async function sendMessage() {
             const data =
                 await response.json();
 
-            message
-                .querySelector(
-                    ".message-content"
-                )
-                .textContent =
-                    data.response ||
-                    data.error ||
-                    "Claude returned no response.";
+            message.querySelector(
+                ".message-content"
+            ).textContent =
+                data.response ||
+                data.error ||
+                "Claude returned no response.";
 
         } catch (error) {
 
@@ -300,12 +254,10 @@ async function sendMessage() {
                 error
             );
 
-            message
-                .querySelector(
-                    ".message-content"
-                )
-                .textContent =
-                    "Could not connect to Claude.";
+            message.querySelector(
+                ".message-content"
+            ).textContent =
+                "Could not connect to Claude.";
         }
 
         return;
@@ -316,9 +268,7 @@ async function sendMessage() {
     // V0
     // =============================
 
-    if (
-        selectedAIs.includes("v0")
-    ) {
+    if (selectedAIs.includes("v0")) {
 
         const message =
             addMessage(
@@ -349,14 +299,12 @@ async function sendMessage() {
             const data =
                 await response.json();
 
-            message
-                .querySelector(
-                    ".message-content"
-                )
-                .textContent =
-                    data.response ||
-                    data.error ||
-                    "v0 returned no response.";
+            message.querySelector(
+                ".message-content"
+            ).textContent =
+                data.response ||
+                data.error ||
+                "v0 returned no response.";
 
         } catch (error) {
 
@@ -365,12 +313,10 @@ async function sendMessage() {
                 error
             );
 
-            message
-                .querySelector(
-                    ".message-content"
-                )
-                .textContent =
-                    "Could not connect to v0.";
+            message.querySelector(
+                ".message-content"
+            ).textContent =
+                "Could not connect to v0.";
         }
 
         return;
@@ -412,6 +358,138 @@ function updateAISelection() {
 
 
 // =============================
+// ADD AI
+// =============================
+
+function addAI() {
+
+    const aiList =
+        document.getElementById("aiList");
+
+    if (!aiList) {
+        console.error("AI list not found.");
+        return;
+    }
+
+    const existing =
+        Array.from(
+            document.querySelectorAll(
+                ".ai-checkbox"
+            )
+        ).map(
+            checkbox => checkbox.value
+        );
+
+    const availableAIs = [
+        "Gemini",
+        "Claude",
+        "v0"
+    ];
+
+    const nextAI =
+        availableAIs.find(
+            ai => !existing.includes(ai)
+        );
+
+    if (!nextAI) {
+
+        alert(
+            "All available AIs are already added."
+        );
+
+        return;
+    }
+
+    const label =
+        document.createElement("label");
+
+    label.className = "ai-item";
+
+    const checkbox =
+        document.createElement("input");
+
+    checkbox.type = "checkbox";
+    checkbox.className = "ai-checkbox";
+    checkbox.value = nextAI;
+
+    const dot =
+        document.createElement("span");
+
+    dot.className =
+        "ai-dot " +
+        nextAI.toLowerCase();
+
+    label.appendChild(checkbox);
+    label.appendChild(dot);
+    label.appendChild(
+        document.createTextNode(" " + nextAI)
+    );
+
+    aiList.appendChild(label);
+
+    checkbox.addEventListener(
+        "change",
+        updateAISelection
+    );
+
+    checkbox.checked = true;
+
+    updateAISelection();
+
+    console.log(
+        "Added AI:",
+        nextAI
+    );
+}
+
+
+// =============================
+// MODE
+// =============================
+
+function setMode(newMode) {
+
+    mode = newMode;
+
+    const singleMode =
+        document.getElementById("singleMode");
+
+    const councilMode =
+        document.getElementById("councilMode");
+
+    const modeText =
+        document.getElementById("modeText");
+
+    if (singleMode) {
+        singleMode.classList.toggle(
+            "active",
+            newMode === "single"
+        );
+    }
+
+    if (councilMode) {
+        councilMode.classList.toggle(
+            "active",
+            newMode === "council"
+        );
+    }
+
+    if (modeText) {
+
+        modeText.textContent =
+            newMode === "council"
+                ? "Multiple AIs working together"
+                : "Talking with one AI";
+    }
+
+    console.log(
+        "Mode changed:",
+        newMode
+    );
+}
+
+
+// =============================
 // NEW CHAT
 // =============================
 
@@ -428,6 +506,25 @@ function newChat() {
         "system",
         "New chat started."
     );
+}
+
+
+// =============================
+// EXAMPLE PROMPTS
+// =============================
+
+function examplePrompt(text) {
+
+    const input =
+        document.getElementById("messageInput");
+
+    if (!input) {
+        return;
+    }
+
+    input.value = text;
+
+    input.focus();
 }
 
 
@@ -501,3 +598,4 @@ document.addEventListener(
 
     }
 );
+```
