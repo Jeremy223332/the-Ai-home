@@ -1,591 +1,503 @@
-```javascript
 let selectedAIs = ["ChatGPT"];
 let mode = "one";
 
 
 // =============================
-// AI RESPONSES
-// =============================
-
-const aiResponses = {
-
-    ChatGPT: "Hello! I'm ChatGPT.",
-
-    Gemini: "Hello! I'm Gemini.",
-
-    Claude: "Hello! I'm Claude.",
-
-    v0: "Hello! I'm v0. I can help build websites and apps.",
-
-    Base44: "I'm currently in demo mode."
-
-};
-
-
-// =============================
-// SUPPORTED AIs
-// =============================
-
-const aiNames = [
-    "ChatGPT",
-    "Gemini",
-    "Claude",
-    "v0",
-    "Base44"
-];
-
-
-// =============================
-// GET OFFICIAL AI NAME
-// =============================
-
-function getOfficialAIName(name) {
-
-    if (!name) {
-        return null;
-    }
-
-    const lowerName =
-        name.trim().toLowerCase();
-
-    return aiNames.find(
-        ai =>
-            ai.toLowerCase() === lowerName
-    ) || null;
-}
-
-
-// =============================
-// UPDATE AI SELECTION
-// =============================
-
-function updateAISelection() {
-
-    document
-        .querySelectorAll(
-            "#aiList input[type='checkbox']"
-        )
-        .forEach(checkbox => {
-
-            const ai =
-                getOfficialAIName(
-                    checkbox.value
-                );
-
-            checkbox.checked =
-                !!ai &&
-                selectedAIs.includes(ai);
-
-        });
-
-
-    updateSelectedInfo();
-}
-
-
-// =============================
-// SELECTED AI INFO
-// =============================
-
-function updateSelectedInfo() {
-
-    const info =
-        document.getElementById(
-            "selectedInfo"
-        );
-
-    if (!info) {
-        return;
-    }
-
-
-    if (selectedAIs.length === 0) {
-
-        info.textContent =
-            "No AI selected";
-
-        return;
-    }
-
-
-    if (mode === "one") {
-
-        info.textContent =
-            selectedAIs[0] +
-            " selected";
-
-        return;
-    }
-
-
-    info.textContent =
-        selectedAIs.length +
-        " AIs selected: " +
-        selectedAIs.join(", ");
-}
-
-
-// =============================
-// MODE
-// =============================
-
-function setMode(newMode) {
-
-    if (newMode === "single") {
-        newMode = "one";
-    }
-
-
-    mode = newMode;
-
-
-    const singleMode =
-        document.getElementById(
-            "singleMode"
-        );
-
-    const councilMode =
-        document.getElementById(
-            "councilMode"
-        );
-
-
-    if (singleMode) {
-
-        singleMode.classList.toggle(
-            "active",
-            mode === "one"
-        );
-    }
-
-
-    if (councilMode) {
-
-        councilMode.classList.toggle(
-            "active",
-            mode === "council"
-        );
-    }
-
-
-    if (
-        mode === "one" &&
-        selectedAIs.length > 1
-    ) {
-
-        selectedAIs = [
-            selectedAIs[0]
-        ];
-    }
-
-
-    const modeText =
-        document.getElementById(
-            "modeText"
-        );
-
-
-    if (modeText) {
-
-        modeText.textContent =
-            mode === "council"
-                ? "Multiple AIs are collaborating"
-                : "Talking with one AI";
-    }
-
-
-    updateAISelection();
-}
-
-
-// =============================
-// ADD AI
-// =============================
-
-function addAI() {
-
-    alert(
-        "More AI providers will be added here later."
-    );
-}
-
-
-// =============================
-// ADD MESSAGE
+// MESSAGE DISPLAY
 // =============================
 
 function addMessage(type, text) {
 
-    const chat =
-        document.getElementById(
-            "chat"
-        );
+    const messages =
+        document.getElementById("messages");
 
-
-    if (!chat) {
-
-        console.error(
-            "Chat area not found."
-        );
-
+    if (!messages) {
+        console.error("messages container not found.");
         return null;
     }
 
-
     const message =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     message.className =
-        "message " + type;
-
+        `message ${type}`;
 
     const avatar =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
-    avatar.className =
-        "message-avatar";
+    avatar.className = "avatar";
 
     avatar.textContent =
-        type === "user"
-            ? "👤"
-            : "🤖";
-
+        type === "user" ? "U" : "AI";
 
     const content =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     content.className =
         "message-content";
 
-    content.textContent =
-        text;
+    content.textContent = text;
 
+    message.appendChild(avatar);
+    message.appendChild(content);
 
-    message.appendChild(
-        avatar
-    );
+    messages.appendChild(message);
 
-    message.appendChild(
-        content
-    );
-
-
-    chat.appendChild(
-        message
-    );
-
-
-    chat.scrollTop =
-        chat.scrollHeight;
-
+    messages.scrollTop =
+        messages.scrollHeight;
 
     return message;
 }
 
 
 // =============================
-// BUILDER DETECTION
+// SEND MESSAGE
 // =============================
 
-function isBuilderRequest(message) {
+async function sendMessage() {
 
-    const text =
-        message
-            .toLowerCase()
-            .trim();
+    console.log("SEND BUTTON PRESSED");
 
+    const input =
+        document.getElementById("messageInput");
 
-    const builderPhrases = [
-
-        "let's build",
-        "lets build",
-
-        "build a website",
-        "build me a website",
-        "build website",
-
-        "create a website",
-        "create me a website",
-        "create website",
-
-        "make a website",
-        "make me a website",
-        "make website",
-
-        "build an app",
-        "build me an app",
-        "build app",
-
-        "create an app",
-        "create me an app",
-        "create app",
-
-        "make an app",
-        "make me an app",
-        "make app",
-
-        "build a discord bot",
-        "build me a discord bot",
-
-        "create a discord bot",
-        "create me a discord bot",
-
-        "make a discord bot",
-        "make me a discord bot",
-
-        "build a chrome extension",
-        "build me a chrome extension",
-
-        "create a chrome extension",
-
-        "build an api",
-        "build me an api",
-
-        "create an api"
-
-    ];
-
-
-    return builderPhrases.some(
-        phrase =>
-            text.includes(phrase)
-    );
-}
-
-
-// =============================
-// BUILDER PROJECT TYPE
-// =============================
-
-function getBuilderProjectType(message) {
-
-    const text =
-        message.toLowerCase();
-
-
-    if (
-        text.includes("discord bot")
-    ) {
-
-        return "Discord Bot";
-    }
-
-
-    if (
-        text.includes("chrome extension") ||
-        text.includes("browser extension")
-    ) {
-
-        return "Chrome Extension";
-    }
-
-
-    if (
-        text.includes("api")
-    ) {
-
-        return "API";
-    }
-
-
-    if (
-        text.includes("app")
-    ) {
-
-        return "Web App";
-    }
-
-
-    return "Website";
-}
-
-
-// =============================
-// OPEN BUILDER
-// =============================
-
-function openBuilder(message) {
-
-    const panel =
-        document.getElementById(
-            "builderPanel"
-        );
-
-
-    if (!panel) {
-
+    if (!input) {
         console.error(
-            "builderPanel was not found."
+            "messageInput was not found."
+        );
+        return;
+    }
+
+    const text =
+        input.value.trim();
+
+    if (!text) {
+        console.log("Message is empty.");
+        return;
+    }
+
+    console.log(
+        "Sending message:",
+        text
+    );
+
+    // Show user's message
+    addMessage(
+        "user",
+        text
+    );
+
+    // Clear textbox
+    input.value = "";
+
+    // Make sure an AI is selected
+    if (selectedAIs.length === 0) {
+
+        addMessage(
+            "system",
+            "Please select an AI first."
         );
 
         return;
     }
 
+    // =============================
+    // CHATGPT
+    // =============================
 
-    const projectName =
-        document.getElementById(
-            "builderProjectName"
-        );
+    if (
+        selectedAIs.includes("ChatGPT")
+    ) {
 
+        const message =
+            addMessage(
+                "ai",
+                "ChatGPT is thinking..."
+            );
 
-    const projectType =
-        document.getElementById(
-            "builderProjectType"
-        );
+        try {
 
+            const response =
+                await fetch(
+                    "/api/chat",
+                    {
+                        method: "POST",
 
-    const status =
-        document.getElementById(
-            "builderStatus"
-        );
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
+                        body:
+                            JSON.stringify({
+                                message: text
+                            })
+                    }
+                );
 
-    const type =
-        getBuilderProjectType(
+            const data =
+                await response.json();
+
+            console.log(
+                "ChatGPT response:",
+                data
+            );
+
+            if (data.response) {
+
+                message
+                    .querySelector(
+                        ".message-content"
+                    )
+                    .textContent =
+                        data.response;
+
+            } else {
+
+                message
+                    .querySelector(
+                        ".message-content"
+                    )
+                    .textContent =
+                        data.error ||
+                        "ChatGPT returned no response.";
+            }
+
+        } catch (error) {
+
+            console.error(
+                "ChatGPT error:",
+                error
+            );
+
             message
-        );
+                .querySelector(
+                    ".message-content"
+                )
+                .textContent =
+                    "Could not connect to ChatGPT.";
+        }
 
-
-    if (projectName) {
-
-        projectName.textContent =
-            "New " +
-            type +
-            " Project";
-    }
-
-
-    if (projectType) {
-
-        projectType.textContent =
-            type;
-    }
-
-
-    if (status) {
-
-        status.textContent =
-            "The AIs are building...";
-    }
-
-
-    panel.classList.remove(
-        "hidden"
-    );
-
-
-    updateBuilderAgent(
-        "agentChatGPT",
-        "Planning..."
-    );
-
-    updateBuilderAgent(
-        "agentGemini",
-        "Waiting..."
-    );
-
-    updateBuilderAgent(
-        "agentClaude",
-        "Waiting..."
-    );
-
-    updateBuilderAgent(
-        "agentV0",
-        "Waiting..."
-    );
-
-
-    clearBuilderLog();
-
-
-    addBuilderLog(
-        "🚀 AI Council started a new " +
-        type +
-        " project."
-    );
-
-
-    addBuilderLog(
-        "🧠 ChatGPT is planning the project..."
-    );
-}
-
-
-// =============================
-// CLOSE BUILDER
-// =============================
-
-function closeBuilder() {
-
-    const panel =
-        document.getElementById(
-            "builderPanel"
-        );
-
-
-    if (panel) {
-
-        panel.classList.add(
-            "hidden"
-        );
-    }
-}
-
-
-// =============================
-// BUILDER LOG
-// =============================
-
-function addBuilderLog(message) {
-
-    const log =
-        document.getElementById(
-            "builderLog"
-        );
-
-
-    if (!log) {
         return;
     }
 
 
-    const item =
-        document.createElement(
-            "div"
-        );
+    // =============================
+    // GEMINI
+    // =============================
+
+    if (
+        selectedAIs.includes("Gemini")
+    ) {
+
+        const message =
+            addMessage(
+                "ai",
+                "Gemini is thinking..."
+            );
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/gemini",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                message: text
+                            })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            message
+                .querySelector(
+                    ".message-content"
+                )
+                .textContent =
+                    data.response ||
+                    data.error ||
+                    "Gemini returned no response.";
+
+        } catch (error) {
+
+            console.error(
+                "Gemini error:",
+                error
+            );
+
+            message
+                .querySelector(
+                    ".message-content"
+                )
+                .textContent =
+                    "Could not connect to Gemini.";
+        }
+
+        return;
+    }
 
 
-    item.className =
-        "builder-log-item";
+    // =============================
+    // CLAUDE
+    // =============================
 
-    item.textContent =
-        message;
+    if (
+        selectedAIs.includes("Claude")
+    ) {
+
+        const message =
+            addMessage(
+                "ai",
+                "Claude is thinking..."
+            );
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/claude",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                message: text
+                            })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            message
+                .querySelector(
+                    ".message-content"
+                )
+                .textContent =
+                    data.response ||
+                    data.error ||
+                    "Claude returned no response.";
+
+        } catch (error) {
+
+            console.error(
+                "Claude error:",
+                error
+            );
+
+            message
+                .querySelector(
+                    ".message-content"
+                )
+                .textContent =
+                    "Could not connect to Claude.";
+        }
+
+        return;
+    }
 
 
-    log.appendChild(
-        item
-    );
+    // =============================
+    // V0
+    // =============================
 
+    if (
+        selectedAIs.includes("v0")
+    ) {
 
-    log.scrollTop =
-        log.scrollHeight;
+        const message =
+            addMessage(
+                "ai",
+                "v0 is thinking..."
+            );
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/v0",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                message: text
+                            })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            message
+                .querySelector(
+                    ".message-content"
+                )
+                .textContent =
+                    data.response ||
+                    data.error ||
+                    "v0 returned no response.";
+
+        } catch (error) {
+
+            console.error(
+                "v0 error:",
+                error
+            );
+
+            message
+                .querySelector(
+                    ".message-content"
+                )
+                .textContent =
+                    "Could not connect to v0.";
+        }
+
+        return;
+    }
 }
 
 
 // =============================
-// CLEAR BUILDER LOG
+// AI SELECTION
 // =============================
 
-function clearBuilderLog() {
+function updateAISelection() {
 
-    const log =
-        document.getElementById(
-            "builderLog"
+    const checkboxes =
+        document.querySelectorAll(
+            ".ai-checkbox"
         );
-```
+
+    selectedAIs = [];
+
+    checkboxes.forEach(
+        checkbox => {
+
+            if (checkbox.checked) {
+
+                selectedAIs.push(
+                    checkbox.value
+                );
+
+            }
+        }
+    );
+
+    console.log(
+        "Selected AIs:",
+        selectedAIs
+    );
+}
+
+
+// =============================
+// NEW CHAT
+// =============================
+
+function newChat() {
+
+    const messages =
+        document.getElementById("messages");
+
+    if (messages) {
+        messages.innerHTML = "";
+    }
+
+    addMessage(
+        "system",
+        "New chat started."
+    );
+}
+
+
+// =============================
+// ENTER KEY
+// =============================
+
+function handleKey(event) {
+
+    if (
+        event.key === "Enter" &&
+        !event.shiftKey
+    ) {
+
+        event.preventDefault();
+
+        sendMessage();
+    }
+}
+
+
+// =============================
+// STARTUP
+// =============================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        console.log(
+            "AI Council JavaScript loaded."
+        );
+
+        const input =
+            document.getElementById(
+                "messageInput"
+            );
+
+        if (input) {
+
+            input.addEventListener(
+                "keydown",
+                handleKey
+            );
+
+        } else {
+
+            console.error(
+                "messageInput not found."
+            );
+        }
+
+
+        const checkboxes =
+            document.querySelectorAll(
+                ".ai-checkbox"
+            );
+
+        checkboxes.forEach(
+            checkbox => {
+
+                checkbox.addEventListener(
+                    "change",
+                    updateAISelection
+                );
+
+            }
+        );
+
+        updateAISelection();
+
+    }
+);
