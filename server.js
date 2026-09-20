@@ -130,40 +130,54 @@ app.post("/api/gemini", async (req, res) => {
         const { message } = req.body;
 
         if (!message) {
-
             return res.status(400).json({
                 error: "Message is required."
             });
-
         }
 
         if (!process.env.GEMINI_API_KEY) {
-
             return res.status(500).json({
-
-                error:
-                    "GEMINI_API_KEY is missing from Render."
-
+                error: "GEMINI_API_KEY is missing from Render."
             });
-
         }
 
-        const response =
-            await gemini.models.generateContent({
+        let response;
 
-                model: "gemini-3.8-flash",
+        // Try Gemini up to 3 times
+        for (let attempt = 1; attempt <= 3; attempt++) {
 
-                contents: message
+            try {
 
-            });
+                response =
+                    await gemini.models.generateContent({
+                        model: "gemini-3.8-flash",
+                        contents: message
+                    });
+
+                break;
+
+            } catch (error) {
+
+                console.error(
+                    `Gemini attempt ${attempt} failed:`,
+                    error.message
+                );
+
+                // If this is the last attempt, throw the error
+                if (attempt === 3) {
+                    throw error;
+                }
+
+                // Wait 2 seconds before retrying
+                await new Promise(resolve =>
+                    setTimeout(resolve, 2000)
+                );
+            }
+        }
 
         res.json({
-
             ai: "Gemini",
-
-            response:
-                response.text
-
+            response: response.text
         });
 
     } catch (error) {
@@ -179,20 +193,13 @@ app.post("/api/gemini", async (req, res) => {
         );
 
         res.status(500).json({
-
-            error:
-                "Gemini could not respond.",
-
-            details:
-                error.message ||
-                String(error)
-
+            error: "Gemini could not respond.",
+            details: error.message || String(error)
         });
 
     }
 
 });
-
 
 // =============================
 // CLAUDE
