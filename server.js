@@ -2,7 +2,9 @@ const express = require("express");
 const OpenAI = require("openai");
 const { GoogleGenAI } = require("@google/genai");
 const Anthropic = require("@anthropic-ai/sdk");
-
+const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY
+});
 const app = express();
 
 const PORT = process.env.PORT || 3000;
