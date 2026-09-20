@@ -1,3 +1,6 @@
+let selectedAIs = ["ChatGPT"];
+let mode = "one";
+
 async function sendMessage() {
     const input = document.getElementById("messageInput");
     const text = input.value.trim();
