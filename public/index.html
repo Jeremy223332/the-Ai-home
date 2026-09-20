@@ -20,264 +20,312 @@
 
 </head>
 
+
 <body>
 
-    <div class="app">
+<div class="app">
 
-        <!-- =========================
-             SIDEBAR
-        ========================== -->
 
-        <aside class="sidebar">
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
 
-            <div class="logo">
+    <aside class="sidebar">
 
-                <div class="logo-icon">
-                    🤖
-                </div>
+        <div class="logo">
 
-                <div>
-
-                    <h1>
-                        AI Council
-                    </h1>
-
-                    <span>
-                        AI Collaboration Hub
-                    </span>
-
-                </div>
-
+            <div class="logo-icon">
+                🤖
             </div>
 
+            <div>
 
-            <button
-                class="new-chat"
-                onclick="newChat()"
-            >
-                ＋ New Conversation
-            </button>
-
-
-            <div class="section-title">
-                MODE
-            </div>
-
-
-            <button
-                class="mode active"
-                onclick="setMode('single')"
-                id="singleMode"
-            >
-                💬 One AI
-            </button>
-
-
-            <button
-                class="mode"
-                onclick="setMode('council')"
-                id="councilMode"
-            >
-                👥 AI Council
-            </button>
-
-
-            <div class="section-title">
-                AIs
-            </div>
-
-
-            <div id="aiList">
-
-                <label class="ai-item">
-
-                    <input
-                        type="checkbox"
-                        value="ChatGPT"
-                        checked
-                    >
-
-                    <span class="ai-dot chatgpt"></span>
-
-                    ChatGPT
-
-                </label>
-
-
-                <label class="ai-item">
-
-                    <input
-                        type="checkbox"
-                        value="Gemini"
-                    >
-
-                    <span class="ai-dot gemini"></span>
-
-                    Gemini
-
-                </label>
-
-
-                <label class="ai-item">
-
-                    <input
-                        type="checkbox"
-                        value="Claude"
-                    >
-
-                    <span class="ai-dot claude"></span>
-
-                    Claude
-
-                </label>
-
-
-                <label class="ai-item">
-
-                    <input
-                        type="checkbox"
-                        value="v0"
-                    >
-
-                    <span class="ai-dot v0"></span>
-
-                    v0
-
-                </label>
-
-            </div>
-
-
-            <button
-                class="add-ai"
-                onclick="addAI()"
-            >
-                ＋ Add AI
-            </button>
-
-
-            <div class="sidebar-bottom">
+                <h1>
+                    AI Council
+                </h1>
 
                 <span>
-                    AI Council v0.1
+                    AI Collaboration Hub
                 </span>
 
             </div>
 
-        </aside>
+        </div>
 
 
-        <!-- =========================
-             MAIN
-        ========================== -->
-
-        <main class="main">
-
-            <!-- HEADER -->
-
-            <header class="topbar">
-
-                <div>
-
-                    <h2 id="conversationTitle">
-                        New Conversation
-                    </h2>
-
-                    <p id="modeText">
-                        Talking with one AI
-                    </p>
-
-                </div>
+        <button
+            class="new-chat"
+            onclick="newChat()"
+        >
+            ＋ New Conversation
+        </button>
 
 
-                <div class="status">
-
-                    <span class="status-dot"></span>
-
-                    System Online
-
-                </div>
-
-            </header>
+        <div class="section-title">
+            MODE
+        </div>
 
 
-            <!-- =========================
-                 CHAT
-            ========================== -->
-
-            <section
-                class="chat"
-                id="chat"
-            >
-
-                <div class="welcome">
-
-                    <div class="welcome-icon">
-                        🤖
-                    </div>
+        <button
+            class="mode active"
+            id="singleMode"
+            onclick="setMode('single')"
+        >
+            💬 One AI
+        </button>
 
 
-                    <h2>
-                        Welcome to AI Council
-                    </h2>
+        <button
+            class="mode"
+            id="councilMode"
+            onclick="setMode('council')"
+        >
+            👥 AI Council
+        </button>
 
 
-                    <p>
-                        Talk to one AI or bring
-                        multiple AIs together
-                        and let them collaborate.
-                    </p>
+        <div class="section-title">
+            AIs
+        </div>
 
 
-                    <div class="example-grid">
+        <div id="aiList">
 
-                        <button
-                            onclick="examplePrompt('Let\\'s build a website')"
-                        >
-                            💻 Build a website
-                        </button>
+            <label class="ai-item">
 
-
-                        <button
-                            onclick="examplePrompt('Help me make a game')"
-                        >
-                            🎮 Make a game
-                        </button>
-
-
-                        <button
-                            onclick="examplePrompt('Help me with programming')"
-                        >
-                            🧑‍💻 Programming
-                        </button>
-
-
-                        <button
-                            onclick="examplePrompt('Give me some ideas')"
-                        >
-                            💡 Brainstorm
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =========================
-                 INPUT
-            ========================== -->
-
-            <footer class="input-area">
-
-                <div
-                    class="selected-info"
-                    id="selectedInfo"
+                <input
+                    type="checkbox"
+                    value="ChatGPT"
+                    checked
                 >
-                    ChatGPT selected
+
+                <span class="ai-dot chatgpt"></span>
+
+                ChatGPT
+
+            </label>
+
+
+            <label class="ai-item">
+
+                <input
+                    type="checkbox"
+                    value="Gemini"
+                >
+
+                <span class="ai-dot gemini"></span>
+
+                Gemini
+
+            </label>
+
+
+            <label class="ai-item">
+
+                <input
+                    type="checkbox"
+                    value="Claude"
+                >
+
+                <span class="ai-dot claude"></span>
+
+                Claude
+
+            </label>
+
+
+            <label class="ai-item">
+
+                <input
+                    type="checkbox"
+                    value="v0"
+                >
+
+                <span class="ai-dot v0"></span>
+
+                v0
+
+            </label>
+
+        </div>
+
+
+        <button
+            class="add-ai"
+            onclick="addAI()"
+        >
+            ＋ Add AI
+        </button>
+
+
+        <div class="sidebar-bottom">
+
+            <span>
+                AI Council v0.1
+            </span>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================
+         MAIN AREA
+    ========================================== -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h2 id="conversationTitle">
+                    New Conversation
+                </h2>
+
+                <p id="modeText">
+                    Talking with one AI
+                </p>
+
+            </div>
+
+
+            <div class="status">
+
+                <span class="status-dot"></span>
+
+                System Online
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =====================================
+             CHAT AREA
+        ====================================== -->
+
+        <section
+            class="chat"
+            id="chat"
+        >
+
+            <div class="welcome">
+
+                <div class="welcome-icon">
+                    🤖
                 </div>
 
 
-                <div class="i
+                <h2>
+                    Welcome to AI Council
+                </h2>
+
+
+                <p>
+                    Talk to one AI or bring
+                    multiple AIs together
+                    and let them collaborate.
+                </p>
+
+
+                <div class="example-grid">
+
+                    <button
+                        onclick="examplePrompt('Let\\'s build a website')"
+                    >
+                        💻 Build a website
+                    </button>
+
+
+                    <button
+                        onclick="examplePrompt('Help me make a game')"
+                    >
+                        🎮 Make a game
+                    </button>
+
+
+                    <button
+                        onclick="examplePrompt('Help me with programming')"
+                    >
+                        🧑‍💻 Programming
+                    </button>
+
+
+                    <button
+                        onclick="examplePrompt('Give me some ideas')"
+                    >
+                        💡 Brainstorm
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================
+             LARGE MESSAGE BOX
+        ====================================== -->
+
+        <footer class="input-area">
+
+
+            <div
+                class="selected-info"
+                id="selectedInfo"
+            >
+                ChatGPT selected
+            </div>
+
+
+            <div class="input-box">
+
+
+                <textarea
+                    id="messageInput"
+                    placeholder="Message AI Council..."
+                    rows="3"
+                    autocomplete="off"
+                    spellcheck="true"
+                ></textarea>
+
+
+                <button
+                    class="send"
+                    type="button"
+                    onclick="sendMessage()"
+                    aria-label="Send message"
+                >
+                    ➤
+                </button>
+
+
+            </div>
+
+
+            <div class="input-note">
+
+                Press Enter to send • Shift + Enter for a new line
+
+            </div>
+
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- =============
 ```
