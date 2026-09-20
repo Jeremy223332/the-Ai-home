@@ -1,4 +1,4 @@
-```javascript
+
 let selectedAIs = ["ChatGPT"];
 let mode = "one";
 
