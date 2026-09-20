@@ -8,20 +8,15 @@ let mode = "one";
 
 const aiResponses = {
 
-    ChatGPT:
-        "Hello! I'm ChatGPT.",
+    ChatGPT: "Hello! I'm ChatGPT.",
 
-    Gemini:
-        "Hello! I'm Gemini.",
+    Gemini: "Hello! I'm Gemini.",
 
-    Claude:
-        "Hello! I'm Claude.",
+    Claude: "Hello! I'm Claude.",
 
-    v0:
-        "Hello! I'm v0. I can help build websites and apps.",
+    v0: "Hello! I'm v0. I can help build websites and apps.",
 
-    Base44:
-        "I'm currently in demo mode."
+    Base44: "I'm currently in demo mode."
 
 };
 
@@ -60,98 +55,10 @@ function getOfficialAIName(name) {
 
 
 // =============================
-// AI SELECTION
-// =============================
-
-function selectAI(ai) {
-
-    const officialAI =
-        getOfficialAIName(ai);
-
-    if (!officialAI) {
-
-        console.warn(
-            "Unknown AI:",
-            ai
-        );
-
-        return;
-    }
-
-
-    if (
-        selectedAIs.includes(
-            officialAI
-        )
-    ) {
-
-        selectedAIs =
-            selectedAIs.filter(
-                name =>
-                    name !== officialAI
-            );
-
-    } else {
-
-        selectedAIs.push(
-            officialAI
-        );
-    }
-
-
-    updateAISelection();
-
-    console.log(
-        "Selected AIs:",
-        selectedAIs
-    );
-}
-
-
-// =============================
 // UPDATE AI SELECTION
 // =============================
 
 function updateAISelection() {
-
-    // Support both the old .ai-option
-    // system and the current checkbox system.
-
-    document
-        .querySelectorAll(".ai-option")
-        .forEach(option => {
-
-            option.classList.remove(
-                "selected"
-            );
-
-            const aiName =
-                option.dataset.ai;
-
-            if (!aiName) {
-                return;
-            }
-
-            const officialName =
-                getOfficialAIName(
-                    aiName
-                );
-
-            if (
-                officialName &&
-                selectedAIs.includes(
-                    officialName
-                )
-            ) {
-
-                option.classList.add(
-                    "selected"
-                );
-            }
-        });
-
-
-    // Current sidebar checkboxes
 
     document
         .querySelectorAll(
@@ -224,12 +131,11 @@ function updateSelectedInfo() {
 
 function setMode(newMode) {
 
-    mode = newMode;
+    if (newMode === "single") {
+        newMode = "one";
+    }
 
-    console.log(
-        "Mode changed to:",
-        mode
-    );
+    mode = newMode;
 
 
     const singleButton =
@@ -247,8 +153,7 @@ function setMode(newMode) {
 
         singleButton.classList.toggle(
             "active",
-            newMode === "single" ||
-            newMode === "one"
+            mode === "one"
         );
     }
 
@@ -257,66 +162,10 @@ function setMode(newMode) {
 
         councilButton.classList.toggle(
             "active",
-            newMode === "council"
+            mode === "council"
         );
     }
 
-
-    // Support the older button class too.
-
-    document
-        .querySelectorAll(
-            ".mode-button"
-        )
-        .forEach(button => {
-
-            button.classList.remove(
-                "active"
-            );
-
-            const buttonText =
-                button.textContent
-                    .trim()
-                    .toLowerCase();
-
-            if (
-                (
-                    newMode === "one" ||
-                    newMode === "single"
-                ) &&
-                buttonText.includes(
-                    "one ai"
-                )
-            ) {
-
-                button.classList.add(
-                    "active"
-                );
-            }
-
-
-            if (
-                newMode === "council" &&
-                buttonText.includes(
-                    "ai council"
-                )
-            ) {
-
-                button.classList.add(
-                    "active"
-                );
-            }
-        });
-
-
-    // Normalize "single" to "one"
-
-    if (mode === "single") {
-        mode = "one";
-    }
-
-
-    // One AI mode only allows one AI.
 
     if (
         mode === "one" &&
@@ -326,8 +175,6 @@ function setMode(newMode) {
         selectedAIs = [
             selectedAIs[0]
         ];
-
-        updateAISelection();
     }
 
 
@@ -335,6 +182,7 @@ function setMode(newMode) {
         document.getElementById(
             "modeText"
         );
+
 
     if (modeText) {
 
@@ -345,7 +193,7 @@ function setMode(newMode) {
     }
 
 
-    updateSelectedInfo();
+    updateAISelection();
 }
 
 
@@ -355,59 +203,8 @@ function setMode(newMode) {
 
 function addAI() {
 
-    const aiNameInput =
-        prompt(
-            "Enter the AI name:\n\n" +
-            "Examples: ChatGPT, Gemini, Claude, v0"
-        );
-
-
-    if (!aiNameInput) {
-        return;
-    }
-
-
-    const officialAI =
-        getOfficialAIName(
-            aiNameInput
-        );
-
-
-    if (!officialAI) {
-
-        alert(
-            `"${aiNameInput}" isn't a supported AI yet.`
-        );
-
-        return;
-    }
-
-
-    if (
-        selectedAIs.includes(
-            officialAI
-        )
-    ) {
-
-        alert(
-            `${officialAI} is already selected.`
-        );
-
-        return;
-    }
-
-
-    selectedAIs.push(
-        officialAI
-    );
-
-
-    updateAISelection();
-
-
-    console.log(
-        "Added AI:",
-        officialAI
+    alert(
+        "More AI providers will be added here later."
     );
 }
 
@@ -425,11 +222,6 @@ function addMessage(type, text) {
 
 
     if (!chat) {
-
-        console.error(
-            "Chat element not found."
-        );
-
         return null;
     }
 
@@ -441,6 +233,20 @@ function addMessage(type, text) {
 
     message.className =
         `message ${type}`;
+
+
+    const avatar =
+        document.createElement(
+            "div"
+        );
+
+    avatar.className =
+        "message-avatar";
+
+    avatar.textContent =
+        type === "user"
+            ? "👤"
+            : "🤖";
 
 
     const content =
@@ -455,6 +261,10 @@ function addMessage(type, text) {
     content.textContent =
         text;
 
+
+    message.appendChild(
+        avatar
+    );
 
     message.appendChild(
         content
@@ -475,13 +285,15 @@ function addMessage(type, text) {
 
 
 // =============================
-// BUILDER MODE
+// BUILDER DETECTION
 // =============================
 
 function isBuilderRequest(message) {
 
     const text =
-        message.toLowerCase();
+        message
+            .toLowerCase()
+            .trim();
 
 
     const builderPhrases = [
@@ -491,21 +303,27 @@ function isBuilderRequest(message) {
 
         "build a website",
         "build me a website",
+        "build website",
 
         "create a website",
         "create me a website",
+        "create website",
 
         "make a website",
         "make me a website",
+        "make website",
 
         "build an app",
         "build me an app",
+        "build app",
 
         "create an app",
         "create me an app",
+        "create app",
 
         "make an app",
         "make me an app",
+        "make app",
 
         "build a discord bot",
         "build me a discord bot",
@@ -525,6 +343,7 @@ function isBuilderRequest(message) {
         "build me an api",
 
         "create an api"
+
     ];
 
 
@@ -546,7 +365,6 @@ function getBuilderProjectType(message) {
 
 
     if (
-        text.includes("discord bot") ||
         text.includes("discord bot")
     ) {
 
@@ -572,14 +390,6 @@ function getBuilderProjectType(message) {
 
 
     if (
-        text.includes("discord")
-    ) {
-
-        return "Discord Project";
-    }
-
-
-    if (
         text.includes("app")
     ) {
 
@@ -597,6 +407,12 @@ function getBuilderProjectType(message) {
 
 function openBuilder(message) {
 
+    console.log(
+        "BUILDER DETECTED:",
+        message
+    );
+
+
     const panel =
         document.getElementById(
             "builderPanel"
@@ -606,7 +422,11 @@ function openBuilder(message) {
     if (!panel) {
 
         console.error(
-            "Builder panel not found."
+            "ERROR: builderPanel was not found."
+        );
+
+        alert(
+            "Builder panel could not be found. Make sure index.html was updated."
         );
 
         return;
@@ -622,6 +442,12 @@ function openBuilder(message) {
     const projectType =
         document.getElementById(
             "builderProjectType"
+        );
+
+
+    const builderStatus =
+        document.getElementById(
+            "builderStatus"
         );
 
 
@@ -647,12 +473,17 @@ function openBuilder(message) {
     }
 
 
+    if (builderStatus) {
+
+        builderStatus.textContent =
+            "The AIs are building...";
+    }
+
+
     panel.classList.remove(
         "hidden"
     );
 
-
-    // Reset the agents.
 
     updateBuilderAgent(
         "agentChatGPT",
@@ -679,14 +510,19 @@ function openBuilder(message) {
 
 
     addBuilderLog(
-        "AI Council started a new " +
+        "🚀 AI Council started a new " +
         type +
         " project."
     );
 
 
     addBuilderLog(
-        "ChatGPT is planning the project..."
+        "🧠 ChatGPT is planning the project..."
+    );
+
+
+    console.log(
+        "Builder panel opened."
     );
 }
 
@@ -804,24 +640,6 @@ function updateBuilderAgent(
 
         statusElement.textContent =
             status;
-    }
-}
-
-
-// =============================
-// KEYBOARD
-// =============================
-
-function handleKey(event) {
-
-    if (
-        event.key === "Enter" &&
-        !event.shiftKey
-    ) {
-
-        event.preventDefault();
-
-        sendMessage();
     }
 }
 
@@ -954,8 +772,6 @@ async function sendMessage() {
     }
 
 
-    // Show user's message.
-
     addMessage(
         "user",
         text
@@ -966,12 +782,17 @@ async function sendMessage() {
 
 
     // =========================
-    // BUILDER DETECTION
+    // BUILDER MODE
     // =========================
 
     if (
         isBuilderRequest(text)
     ) {
+
+        console.log(
+            "Opening Builder Mode..."
+        );
+
 
         openBuilder(text);
 
@@ -988,16 +809,6 @@ async function sendMessage() {
         const selectedAI =
             selectedAIs[0];
 
-
-        console.log(
-            "Sending to:",
-            selectedAI
-        );
-
-
-        // =====================
-        // CHATGPT
-        // =====================
 
         if (
             selectedAI === "ChatGPT"
@@ -1024,17 +835,12 @@ async function sendMessage() {
                     )
                     .textContent =
                         data.response ||
-                        "ChatGPT error: " +
-                        (
-                            data.error ||
-                            "Unknown error"
-                        );
-
+                        data.error ||
+                        "ChatGPT returned no response.";
 
             } catch (error) {
 
                 console.error(
-                    "ChatGPT error:",
                     error
                 );
 
@@ -1051,10 +857,6 @@ async function sendMessage() {
             return;
         }
 
-
-        // =====================
-        // GEMINI
-        // =====================
 
         if (
             selectedAI === "Gemini"
@@ -1081,17 +883,12 @@ async function sendMessage() {
                     )
                     .textContent =
                         data.response ||
-                        "Gemini error: " +
-                        (
-                            data.error ||
-                            "Unknown error"
-                        );
-
+                        data.error ||
+                        "Gemini returned no response.";
 
             } catch (error) {
 
                 console.error(
-                    "Gemini error:",
                     error
                 );
 
@@ -1109,10 +906,6 @@ async function sendMessage() {
         }
 
 
-        // =====================
-        // CLAUDE
-        // =====================
-
         if (
             selectedAI === "Claude"
         ) {
@@ -1125,10 +918,6 @@ async function sendMessage() {
             return;
         }
 
-
-        // =====================
-        // V0
-        // =====================
 
         if (
             selectedAI === "v0"
@@ -1155,17 +944,12 @@ async function sendMessage() {
                     )
                     .textContent =
                         data.response ||
-                        "v0 error: " +
-                        (
-                            data.error ||
-                            "Unknown error"
-                        );
-
+                        data.error ||
+                        "v0 returned no response.";
 
             } catch (error) {
 
                 console.error(
-                    "v0 error:",
                     error
                 );
 
@@ -1183,225 +967,162 @@ async function sendMessage() {
         }
 
 
-        // =====================
-        // OTHER AI
-        // =====================
-
         addMessage(
             "ai",
             aiResponses[selectedAI] ||
             `${selectedAI} is currently in demo mode.`
         );
 
-
         return;
     }
 
 
     // =========================
-    // AI COUNCIL MODE
+    // COUNCIL MODE
     // =========================
 
-    if (
-        mode === "council"
+    for (
+        const ai of selectedAIs
     ) {
 
-        console.log(
-            "Council members:",
-            selectedAIs
-        );
-
-
-        for (
-            const ai of selectedAIs
+        if (
+            ai === "ChatGPT"
         ) {
 
-
-            // =====================
-            // CHATGPT
-            // =====================
-
-            if (
-                ai === "ChatGPT"
-            ) {
-
-                const thinkingMessage =
-                    addMessage(
-                        "ai",
-                        "ChatGPT is thinking..."
-                    );
-
-
-                try {
-
-                    const data =
-                        await askChatGPT(
-                            text
-                        );
-
-
-                    thinkingMessage
-                        .querySelector(
-                            ".message-content"
-                        )
-                        .textContent =
-                            "ChatGPT: " +
-                            (
-                                data.response ||
-                                data.error ||
-                                "No response."
-                            );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "ChatGPT error:",
-                        error
-                    );
-
-
-                    thinkingMessage
-                        .querySelector(
-                            ".message-content"
-                        )
-                        .textContent =
-                            "ChatGPT: Connection error.";
-                }
-            }
-
-
-            // =====================
-            // GEMINI
-            // =====================
-
-            else if (
-                ai === "Gemini"
-            ) {
-
-                const thinkingMessage =
-                    addMessage(
-                        "ai",
-                        "Gemini is thinking..."
-                    );
-
-
-                try {
-
-                    const data =
-                        await askGemini(
-                            text
-                        );
-
-
-                    thinkingMessage
-                        .querySelector(
-                            ".message-content"
-                        )
-                        .textContent =
-                            "Gemini: " +
-                            (
-                                data.response ||
-                                data.error ||
-                                "No response."
-                            );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Gemini error:",
-                        error
-                    );
-
-
-                    thinkingMessage
-                        .querySelector(
-                            ".message-content"
-                        )
-                        .textContent =
-                            "Gemini: Connection error.";
-                }
-            }
-
-
-            // =====================
-            // V0
-            // =====================
-
-            else if (
-                ai === "v0"
-            ) {
-
-                const thinkingMessage =
-                    addMessage(
-                        "ai",
-                        "v0 is building..."
-                    );
-
-
-                try {
-
-                    const data =
-                        await askV0(
-                            text
-                        );
-
-
-                    thinkingMessage
-                        .querySelector(
-                            ".message-content"
-                        )
-                        .textContent =
-                            "v0: " +
-                            (
-                                data.response ||
-                                data.error ||
-                                "No response."
-                            );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "v0 error:",
-                        error
-                    );
-
-
-                    thinkingMessage
-                        .querySelector(
-                            ".message-content"
-                        )
-                        .textContent =
-                            "v0: Connection error.";
-                }
-            }
-
-
-            // =====================
-            // OTHER AI
-            // =====================
-
-            else {
-
-                await new Promise(
-                    resolve =>
-                        setTimeout(
-                            resolve,
-                            500
-                        )
-                );
-
-
+            const message =
                 addMessage(
                     "ai",
-                    `${ai}: ${
-                        aiResponses[ai] ||
-                        "I'm currently in demo mode."
-                    }`
+                    "ChatGPT is thinking..."
                 );
+
+
+            try {
+
+                const data =
+                    await askChatGPT(
+                        text
+                    );
+
+
+                message
+                    .querySelector(
+                        ".message-content"
+                    )
+                    .textContent =
+                        "ChatGPT: " +
+                        (
+                            data.response ||
+                            data.error ||
+                            "No response."
+                        );
+
+            } catch (error) {
+
+                message
+                    .querySelector(
+                        ".message-content"
+                    )
+                    .textContent =
+                        "ChatGPT: Connection error.";
             }
+        }
+
+
+        else if (
+            ai === "Gemini"
+        ) {
+
+            const message =
+                addMessage(
+                    "ai",
+                    "Gemini is thinking..."
+                );
+
+
+            try {
+
+                const data =
+                    await askGemini(
+                        text
+                    );
+
+
+                message
+                    .querySelector(
+                        ".message-content"
+                    )
+                    .textContent =
+                        "Gemini: " +
+                        (
+                            data.response ||
+                            data.error ||
+                            "No response."
+                        );
+
+            } catch (error) {
+
+                message
+                    .querySelector(
+                        ".message-content"
+                    )
+                    .textContent =
+                        "Gemini: Connection error.";
+            }
+        }
+
+
+        else if (
+            ai === "v0"
+        ) {
+
+            const message =
+                addMessage(
+                    "ai",
+                    "v0 is building..."
+                );
+
+
+            try {
+
+                const data =
+                    await askV0(
+                        text
+                    );
+
+
+                message
+                    .querySelector(
+                        ".message-content"
+                    )
+                    .textContent =
+                        "v0: " +
+                        (
+                            data.response ||
+                            data.error ||
+                            "No response."
+                        );
+
+            } catch (error) {
+
+                message
+                    .querySelector(
+                        ".message-content"
+                    )
+                    .textContent =
+                        "v0: Connection error.";
+            }
+        }
+
+
+        else {
+
+            addMessage(
+                "ai",
+                `${ai}: ${
+                    aiResponses[ai] ||
+                    "I'm currently in demo mode."
+                }`
+            );
         }
     }
 }
@@ -1420,7 +1141,6 @@ function newChat() {
 
 
     if (chat) {
-
         chat.innerHTML = "";
     }
 
@@ -1438,28 +1158,12 @@ function newChat() {
     }
 
 
-    const builderPanel =
-        document.getElementById(
-            "builderPanel"
-        );
-
-
-    if (builderPanel) {
-
-        builderPanel.classList.add(
-            "hidden"
-        );
-    }
-
-
-    console.log(
-        "Started new conversation."
-    );
+    closeBuilder();
 }
 
 
 // =============================
-// EXAMPLE PROMPTS
+// EXAMPLE PROMPT
 // =============================
 
 function examplePrompt(text) {
@@ -1478,8 +1182,25 @@ function examplePrompt(text) {
     input.value =
         text;
 
-
     input.focus();
+}
+
+
+// =============================
+// KEYBOARD
+// =============================
+
+function handleKey(event) {
+
+    if (
+        event.key === "Enter" &&
+        !event.shiftKey
+    ) {
+
+        event.preventDefault();
+
+        sendMessage();
+    }
 }
 
 
@@ -1490,6 +1211,11 @@ function examplePrompt(text) {
 document.addEventListener(
     "DOMContentLoaded",
     () => {
+
+        console.log(
+            "AI Council loaded."
+        );
+
 
         const input =
             document.getElementById(
@@ -1505,8 +1231,6 @@ document.addEventListener(
             );
         }
 
-
-        // Sidebar checkbox handling
 
         document
             .querySelectorAll(
@@ -1534,19 +1258,20 @@ document.addEventListener(
                         ) {
 
                             if (
-                                !selectedAIs
-                                    .includes(ai)
+                                mode === "one"
                             ) {
 
+                                selectedAIs = [
+                                    ai
+                                ];
+
+                            } else {
+
                                 if (
-                                    mode === "one"
-                                ) {
-
-                                    selectedAIs = [
+                                    !selectedAIs.includes(
                                         ai
-                                    ];
-
-                                } else {
+                                    )
+                                ) {
 
                                     selectedAIs.push(
                                         ai
@@ -1565,13 +1290,10 @@ document.addEventListener(
 
 
                         updateAISelection();
-
                     }
                 );
             });
 
-
-        // Builder close button
 
         const closeBuilderButton =
             document.getElementById(
@@ -1593,5 +1315,6 @@ document.addEventListener(
         updateAISelection();
 
         setMode("one");
+
     }
 );
