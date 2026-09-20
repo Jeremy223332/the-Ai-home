@@ -2,6 +2,7 @@ const express = require("express");
 const OpenAI = require("openai");
 const { GoogleGenAI } = require("@google/genai");
 const Anthropic = require("@anthropic-ai/sdk");
+const { connect } = require("framer-api");
 
 const app = express();
 
