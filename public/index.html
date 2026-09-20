@@ -549,6 +549,13 @@
 
 <script src="app.js"></script>
 
+<script>
+    // Make Add AI available to the HTML button
+    if (typeof addAI === "function") {
+        window.addAI = addAI;
+    }
+</script>
+
 
 </body>
 
