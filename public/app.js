@@ -323,6 +323,7 @@ function addAI() {
 // MODE
 // =============================
 
+```javascript
 function setMode(newMode) {
     mode = newMode;
 
@@ -352,12 +353,54 @@ function setMode(newMode) {
     if (modeText) {
         modeText.textContent =
             newMode === "council"
-                ? "Multiple AIs working together"
+                ? "All AIs working together"
                 : "Talking with one AI";
+    }
+
+    // =============================
+    // COUNCIL MODE
+    // SELECT ALL AIs
+    // =============================
+
+    if (newMode === "council") {
+        const checkboxes =
+            document.querySelectorAll(".ai-checkbox");
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = true;
+        });
+
+        updateAISelection();
+    }
+
+    // =============================
+    // SINGLE AI MODE
+    // =============================
+
+    if (newMode === "single") {
+        const checkboxes =
+            document.querySelectorAll(".ai-checkbox");
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+
+        const chatGPT =
+            document.querySelector(
+                '.ai-checkbox[value="ChatGPT"]'
+            );
+
+        if (chatGPT) {
+            chatGPT.checked = true;
+        }
+
+        updateAISelection();
     }
 
     console.log("Mode changed:", newMode);
 }
+```
+
 
 
 // =============================
