@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,6 +94,7 @@
 
                 <input
                     type="checkbox"
+                    class="ai-checkbox"
                     value="ChatGPT"
                     checked
                 >
@@ -110,6 +110,7 @@
 
                 <input
                     type="checkbox"
+                    class="ai-checkbox"
                     value="Gemini"
                 >
 
@@ -124,6 +125,7 @@
 
                 <input
                     type="checkbox"
+                    class="ai-checkbox"
                     value="Claude"
                 >
 
@@ -138,6 +140,7 @@
 
                 <input
                     type="checkbox"
+                    class="ai-checkbox"
                     value="v0"
                 >
 
@@ -215,53 +218,64 @@
             id="chat"
         >
 
-            <div class="welcome">
+            <div
+                id="messages"
+                class="messages"
+            >
 
-                <div class="welcome-icon">
-                    🤖
-                </div>
+                <div class="welcome">
 
-
-                <h2>
-                    Welcome to AI Council
-                </h2>
-
-
-                <p>
-                    Talk to one AI or bring
-                    multiple AIs together
-                    and let them collaborate.
-                </p>
+                    <div class="welcome-icon">
+                        🤖
+                    </div>
 
 
-                <div class="example-grid">
-
-                    <button
-                        onclick="examplePrompt('Let\\'s build a website')"
-                    >
-                        💻 Build a website
-                    </button>
+                    <h2>
+                        Welcome to AI Council
+                    </h2>
 
 
-                    <button
-                        onclick="examplePrompt('Help me make a game')"
-                    >
-                        🎮 Make a game
-                    </button>
+                    <p>
+                        Talk to one AI or bring
+                        multiple AIs together
+                        and let them collaborate.
+                    </p>
 
 
-                    <button
-                        onclick="examplePrompt('Help me with programming')"
-                    >
-                        🧑‍💻 Programming
-                    </button>
+                    <div class="example-grid">
+
+                        <button
+                            type="button"
+                            onclick="examplePrompt('Let\\'s build a website')"
+                        >
+                            💻 Build a website
+                        </button>
 
 
-                    <button
-                        onclick="examplePrompt('Give me some ideas')"
-                    >
-                        💡 Brainstorm
-                    </button>
+                        <button
+                            type="button"
+                            onclick="examplePrompt('Help me make a game')"
+                        >
+                            🎮 Make a game
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onclick="examplePrompt('Help me with programming')"
+                        >
+                            🧑‍💻 Programming
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onclick="examplePrompt('Give me some ideas')"
+                        >
+                            💡 Brainstorm
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -327,5 +341,215 @@
 
 
 
-<!-- =============
-```
+<!-- =========================================
+     BUILDER PANEL
+========================================== -->
+
+<div
+    id="builderPanel"
+    class="builder-panel hidden"
+>
+
+    <div class="builder-header">
+
+        <div>
+
+            <h2>
+                AI Builder
+            </h2>
+
+            <p id="builderStatus">
+                Ready to build
+            </p>
+
+        </div>
+
+
+        <button
+            id="closeBuilder"
+            type="button"
+        >
+            ✕
+        </button>
+
+    </div>
+
+
+    <div class="builder-content">
+
+
+        <div class="builder-project">
+
+            <h3>
+                Project
+            </h3>
+
+            <div id="builderProjectName">
+                New Project
+            </div>
+
+            <div id="builderProjectType">
+                Project type: Unknown
+            </div>
+
+        </div>
+
+
+
+        <div class="builder-agents">
+
+            <h3>
+                AI Team
+            </h3>
+
+
+            <div
+                class="builder-agent"
+                id="agentChatGPT"
+            >
+
+                <span class="builder-agent-dot"></span>
+
+                <strong>
+                    ChatGPT
+                </strong>
+
+                <span>
+                    Planning
+                </span>
+
+            </div>
+
+
+            <div
+                class="builder-agent"
+                id="agentGemini"
+            >
+
+                <span class="builder-agent-dot"></span>
+
+                <strong>
+                    Gemini
+                </strong>
+
+                <span>
+                    Waiting
+                </span>
+
+            </div>
+
+
+            <div
+                class="builder-agent"
+                id="agentClaude"
+            >
+
+                <span class="builder-agent-dot"></span>
+
+                <strong>
+                    Claude
+                </strong>
+
+                <span>
+                    Waiting
+                </span>
+
+            </div>
+
+
+            <div
+                class="builder-agent"
+                id="agentV0"
+            >
+
+                <span class="builder-agent-dot"></span>
+
+                <strong>
+                    v0
+                </strong>
+
+                <span>
+                    Waiting
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="builder-log">
+
+            <h3>
+                Build Activity
+            </h3>
+
+            <div id="builderLog">
+
+                <div>
+                    Waiting for project...
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="builder-files">
+
+            <h3>
+                Project Files
+            </h3>
+
+            <div id="builderFiles">
+                No files created yet.
+            </div>
+
+        </div>
+
+
+
+        <div class="builder-connections">
+
+            <h3>
+                Connections
+            </h3>
+
+            <div id="builderConnections">
+                No external connections.
+            </div>
+
+        </div>
+
+
+
+        <div class="builder-secrets">
+
+            <h3>
+                Secrets
+            </h3>
+
+            <div id="builderSecrets">
+                No secrets configured.
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script src="app.js"></script>
+
+
+</body>
+
+</html>
