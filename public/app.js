@@ -430,7 +430,63 @@ async function sendMessage() {
 
         return;
     }
+// V0 WEBSITE BUILDER
 
+if (selectedAI === "v0") {
+
+    const thinkingMessage =
+        addMessage(
+            "ai",
+            "v0 is building..."
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/v0",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        message: text
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        thinkingMessage.querySelector(
+            ".message-content"
+        ).textContent =
+            data.response ||
+            "v0 error: " +
+            (
+                data.error ||
+                "Unknown error"
+            );
+
+    } catch (error) {
+
+        console.error(
+            "v0 error:",
+            error
+        );
+
+        thinkingMessage.querySelector(
+            ".message-content"
+        ).textContent =
+            "Could not connect to v0.";
+    }
+
+    return;
+}
 
     // -------------------------
     // AI COUNCIL MODE
