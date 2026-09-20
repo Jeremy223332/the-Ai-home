@@ -37,6 +37,106 @@ const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY
 });
 
+// =============================
+// COPILOT / MICROSOFT
+// =============================
+
+app.post("/api/copilot", async (req, res) => {
+
+    try {
+
+        const { message } = req.body;
+
+        if (!message) {
+            return res.status(400).json({
+                error: "Message is required."
+            });
+        }
+
+        if (!process.env.MICROSOFT_API_KEY) {
+            return res.status(500).json({
+                error: "MICROSOFT_API_KEY is missing from Render."
+            });
+        }
+
+        if (!process.env.MICROSOFT_ENDPOINT) {
+            return res.status(500).json({
+                error: "MICROSOFT_ENDPOINT is missing from Render."
+            });
+        }
+
+        if (!process.env.MICROSOFT_MODEL) {
+            return res.status(500).json({
+                error: "MICROSOFT_MODEL is missing from Render."
+            });
+        }
+
+        const endpoint =
+            process.env.MICROSOFT_ENDPOINT.replace(/\/+$/, "");
+
+        const response = await fetch(
+            `${endpoint}/openai/v1/chat/completions`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "api-key": process.env.MICROSOFT_API_KEY
+                },
+
+                body: JSON.stringify({
+                    model: process.env.MICROSOFT_MODEL,
+
+                    messages: [
+                        {
+                            role: "user",
+                            content: message
+                        }
+                    ]
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            console.error(
+                "Microsoft error:",
+                data
+            );
+
+            return res.status(response.status).json({
+                error: "Copilot could not respond.",
+                details: data
+            });
+        }
+
+        const text =
+            data.choices?.[0]?.message?.content;
+
+        res.json({
+            ai: "Copilot",
+            response:
+                text || "Copilot returned no response."
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Copilot error:",
+            error
+        );
+
+        res.status(500).json({
+            error: "Copilot could not respond.",
+            details:
+                error.message ||
+                String(error)
+        });
+    }
+
+});
 
 // =============================
 // STATUS
