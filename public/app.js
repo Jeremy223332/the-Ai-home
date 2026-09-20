@@ -1,15 +1,17 @@
 let selectedAIs = ["ChatGPT"];
 let mode = "one";
 
-const aiResponses = {
+    const aiResponses = {
     ChatGPT: "Hello! I'm ChatGPT.",
     Gemini: "Hello! I'm Gemini.",
     Claude: "Hello! I'm Claude.",
     Copilot: "Hello! I'm Copilot.",
     Replit: "Hello! I'm Replit.",
     Framer: "Hello! I'm Framer.",
-    Base44: "I'm currently in demo mode."
+    Base44: "I'm currently in demo mode.",
+    v0: "Hello! I'm v0. I can help build websites and apps."
 };
+
 
 
 // -----------------------------
@@ -45,17 +47,16 @@ function selectAI(ai) {
 // OFFICIAL AI NAME
 // -----------------------------
 
-function getOfficialAIName(name) {
-
-    const aiNames = [
-        "ChatGPT",
-        "Gemini",
-        "Claude",
-        "Copilot",
-        "Replit",
-        "Framer",
-        "Base44"
-    ];
+const aiNames = [
+    "ChatGPT",
+    "Gemini",
+    "Claude",
+    "Copilot",
+    "Replit",
+    "Framer",
+    "Base44",
+    "v0"
+];
 
     const lowerName = name.trim().toLowerCase();
 
