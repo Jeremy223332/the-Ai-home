@@ -1,6 +1,15 @@
-npm error code EJSONPARSE
-npm error JSON.parse Invalid package.json: JSONParseError: Unexpected non-whitespace character after JSON at position 14 (line 1 column 15) while parsing near "\"dependencies\": {\n    \"express\": \"..."
-npm error JSON.parse Failed to parse JSON data.
-npm error JSON.parse Note: package.json must be actual JSON, not just JavaScript.
-npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-09-20T13_11_07_002Z-debug-0.log
-==> Build failed 😞
+{
+  "name": "ai-council",
+  "version": "1.0.0",
+  "description": "AI Council - connect multiple AI providers in one place",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "openai": "^5.0.0",
+    "@google/genai": "^1.0.0",
+    "@anthropic-ai/sdk": "^0.60.0"
+  }
+}
